@@ -1,54 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="640" viewBox="0 0 980 640">
   <rect width="980" height="640" fill="#ffffff"/>
-  <text x="24" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Transformer (draw both towers) and BERT input</text>
-  <text x="40" y="60" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Encoder × 6</text>
-  <text x="280" y="60" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Decoder × 6</text>
+  <text x="24" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Transformer (draw both towers) and BERT input</text>
+  <text x="40" y="60" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Encoder x 6</text>
+  <text x="280" y="60" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Decoder x 6</text>
   <rect x="24" y="80" width="200" height="36" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="40" y="103" font-family="Segoe UI, Arial, sans-serif" font-size="13">Input emb + position</text>
+  <text x="40" y="103" font-family="Arial, sans-serif" font-size="13">Input emb + position</text>
   <rect x="24" y="130" width="200" height="36" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="48" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="13">Self-attention  Q K V</text>
+  <text x="48" y="153" font-family="Arial, sans-serif" font-size="13">Self-attention  Q K V</text>
   <rect x="24" y="176" width="200" height="28" rx="6" fill="#f1f5f9" stroke="#1e3a5f"/>
-  <text x="70" y="195" font-family="Segoe UI, Arial, sans-serif" font-size="12">Add and LayerNorm</text>
+  <text x="70" y="195" font-family="Arial, sans-serif" font-size="12">Add and LayerNorm</text>
   <rect x="24" y="214" width="200" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="78" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="13">Feed-forward</text>
+  <text x="78" y="235" font-family="Arial, sans-serif" font-size="13">Feed-forward</text>
   <rect x="24" y="256" width="200" height="28" rx="6" fill="#f1f5f9" stroke="#1e3a5f"/>
-  <text x="70" y="275" font-family="Segoe UI, Arial, sans-serif" font-size="12">Add and LayerNorm</text>
+  <text x="70" y="275" font-family="Arial, sans-serif" font-size="12">Add and LayerNorm</text>
   <rect x="24" y="300" width="200" height="36" rx="6" fill="#bbf7d0" stroke="#15803d"/>
-  <text x="78" y="323" font-family="Segoe UI, Arial, sans-serif" font-size="14">M, one vector / word</text>
+  <text x="48" y="323" font-family="Arial, sans-serif" font-size="14">M, one vector per word</text>
   <rect x="260" y="80" width="230" height="36" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="276" y="103" font-family="Segoe UI, Arial, sans-serif" font-size="13">Output shifted right + position</text>
+  <text x="276" y="103" font-family="Arial, sans-serif" font-size="13">Output shifted right + position</text>
   <rect x="260" y="130" width="230" height="36" rx="6" fill="#fecaca" stroke="#1e3a5f"/>
-  <text x="286" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="13">Masked self-attention</text>
+  <text x="300" y="153" font-family="Arial, sans-serif" font-size="13">Masked self-attention</text>
   <rect x="260" y="176" width="230" height="28" rx="6" fill="#f1f5f9" stroke="#1e3a5f"/>
-  <text x="320" y="195" font-family="Segoe UI, Arial, sans-serif" font-size="12">Add and LayerNorm</text>
+  <text x="320" y="195" font-family="Arial, sans-serif" font-size="12">Add and LayerNorm</text>
   <rect x="260" y="214" width="230" height="36" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="300" y="237" font-family="Segoe UI, Arial, sans-serif" font-size="13">Cross-attention</text>
+  <text x="318" y="237" font-family="Arial, sans-serif" font-size="13">Cross-attention</text>
   <rect x="260" y="260" width="230" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="318" y="281" font-family="Segoe UI, Arial, sans-serif" font-size="13">Feed-forward</text>
+  <text x="318" y="281" font-family="Arial, sans-serif" font-size="13">Feed-forward</text>
   <rect x="260" y="302" width="230" height="34" rx="6" fill="#bbf7d0" stroke="#15803d"/>
-  <text x="300" y="324" font-family="Segoe UI, Arial, sans-serif" font-size="13">Linear + softmax</text>
+  <text x="310" y="324" font-family="Arial, sans-serif" font-size="13">Linear + softmax</text>
   <path d="M224 318 C250 318, 250 232, 260 232" fill="none" stroke="#15803d" stroke-width="2"/>
-  <text x="500" y="100" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#0f172a">1 Encoder self-attn: Q, K, V from source.</text>
-  <text x="500" y="122" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#0f172a">2 Masked self-attn: future scores = .</text>
-  <text x="500" y="144" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#0f172a">3 Cross-attn: Q from decoder, K and V from M.</text>
-  <text x="500" y="174" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Attention(Q,K,V) = softmax(QK@ / d–) V</text>
-  <text x="500" y="198" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Add and Norm = LayerNorm(x + sublayer(x))</text>
-  <text x="500" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Encoder runs once. Decoder once per new word.</text>
-  <text x="500" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Base: d=512, 8 heads × 64, FFN 2048, N=6.</text>
-  <text x="500" y="278" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">No position added ’ dog bites man equals</text>
-  <text x="500" y="298" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">man bites dog, because attention is a set.</text>
-
-  <text x="24" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">BERT input = token + segment + position (sum, not concatenation)</text>
-  <rect x="24" y="390" width="70" height="28" fill="#dbeafe" stroke="#1e3a5f"/><text x="36" y="409" font-family="Segoe UI, Arial, sans-serif" font-size="12">[CLS]</text>
-  <rect x="98" y="390" width="70" height="28" fill="#dbeafe" stroke="#1e3a5f"/><text x="118" y="409" font-family="Segoe UI, Arial, sans-serif" font-size="12">my</text>
-  <rect x="172" y="390" width="70" height="28" fill="#dbeafe" stroke="#1e3a5f"/><text x="186" y="409" font-family="Segoe UI, Arial, sans-serif" font-size="12">dog</text>
-  <rect x="246" y="390" width="70" height="28" fill="#fecaca" stroke="#1e3a5f"/><text x="258" y="409" font-family="Segoe UI, Arial, sans-serif" font-size="12">[SEP]</text>
-  <rect x="320" y="390" width="70" height="28" fill="#fde68a" stroke="#1e3a5f"/><text x="338" y="409" font-family="Segoe UI, Arial, sans-serif" font-size="12">he</text>
-  <text x="24" y="446" font-family="Segoe UI, Arial, sans-serif" font-size="13">Segment: A A A A | B &     Position: learned, 0, 1, 2, & up to 512</text>
-  <text x="24" y="472" font-family="Segoe UI, Arial, sans-serif" font-size="13">C = output of [CLS], used for sentence class and next-sentence.</text>
-  <text x="24" y="494" font-family="Segoe UI, Arial, sans-serif" font-size="13">Each token output Tb is contextual. The embedding table itself is still one row per piece.</text>
-  <text x="24" y="524" font-family="Segoe UI, Arial, sans-serif" font-size="13">MLM: pick 15%. Of those, 80% [MASK], 10% random word, 10% unchanged. Loss only there.</text>
-  <text x="24" y="546" font-family="Segoe UI, Arial, sans-serif" font-size="13">QA: question is segment A, passage is segment B. New vectors S and E. Span score = sb + e|, j e i.</text>
-  <text x="24" y="576" font-family="Segoe UI, Arial, sans-serif" font-size="13">BERT is encoder-only: it points or classifies. It does not write a new paragraph. GPT does, with a causal mask.</text>
-  <text x="24" y="610" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#64748b">Base 12×768×12 heads, ~110M, GELU. Large 24×1024×16, ~340M. Original Transformer positions are sine/cosine, not learned.</text>
+  <text x="510" y="100" font-family="Arial, sans-serif" font-size="13" fill="#0f172a">1 Encoder self-attn: Q, K, V from source.</text>
+  <text x="510" y="122" font-family="Arial, sans-serif" font-size="13" fill="#0f172a">2 Masked self-attn: future scores = -infinity.</text>
+  <text x="510" y="144" font-family="Arial, sans-serif" font-size="13" fill="#0f172a">3 Cross-attn: Q from decoder, K and V from M.</text>
+  <text x="510" y="174" font-family="Arial, sans-serif" font-size="13" fill="#334155">Attention = softmax(Q K^T / sqrt(d_k)) V</text>
+  <text x="510" y="198" font-family="Arial, sans-serif" font-size="13" fill="#334155">Add and Norm = LayerNorm(x + sublayer(x))</text>
+  <text x="510" y="222" font-family="Arial, sans-serif" font-size="13" fill="#334155">Encoder runs once. Decoder once per new word.</text>
+  <text x="510" y="246" font-family="Arial, sans-serif" font-size="13" fill="#334155">Base: d=512, 8 heads x 64, FFN 2048, N=6.</text>
+  <text x="510" y="278" font-family="Arial, sans-serif" font-size="13" fill="#334155">No position added: dog bites man equals</text>
+  <text x="510" y="298" font-family="Arial, sans-serif" font-size="13" fill="#334155">man bites dog, because attention is a set.</text>
+  <text x="24" y="370" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">BERT input = token + segment + position (sum, not concatenation)</text>
+  <rect x="24" y="390" width="70" height="28" fill="#dbeafe" stroke="#1e3a5f"/><text x="36" y="409" font-family="Arial, sans-serif" font-size="12">[CLS]</text>
+  <rect x="98" y="390" width="70" height="28" fill="#dbeafe" stroke="#1e3a5f"/><text x="118" y="409" font-family="Arial, sans-serif" font-size="12">my</text>
+  <rect x="172" y="390" width="70" height="28" fill="#dbeafe" stroke="#1e3a5f"/><text x="186" y="409" font-family="Arial, sans-serif" font-size="12">dog</text>
+  <rect x="246" y="390" width="70" height="28" fill="#fecaca" stroke="#1e3a5f"/><text x="258" y="409" font-family="Arial, sans-serif" font-size="12">[SEP]</text>
+  <rect x="320" y="390" width="70" height="28" fill="#fde68a" stroke="#1e3a5f"/><text x="338" y="409" font-family="Arial, sans-serif" font-size="12">he</text>
+  <text x="24" y="446" font-family="Arial, sans-serif" font-size="13">Segment: A A A A then B. Position: learned, 0, 1, 2, ... up to 512.</text>
+  <text x="24" y="472" font-family="Arial, sans-serif" font-size="13">C = output of [CLS], used for sentence class and next-sentence.</text>
+  <text x="24" y="494" font-family="Arial, sans-serif" font-size="13">Each token output T_i is contextual. The embedding table itself is still one row per piece.</text>
+  <text x="24" y="524" font-family="Arial, sans-serif" font-size="13">MLM: pick 15%. Of those, 80% [MASK], 10% random word, 10% unchanged. Loss only there.</text>
+  <text x="24" y="546" font-family="Arial, sans-serif" font-size="13">QA: question is segment A, passage is segment B. New vectors S and E. Span score = s_i + e_j, j &gt;= i.</text>
+  <text x="24" y="576" font-family="Arial, sans-serif" font-size="13">BERT is encoder-only: it points or classifies. It does not write a new paragraph. GPT does, with a causal mask.</text>
+  <text x="24" y="610" font-family="Arial, sans-serif" font-size="13" fill="#64748b">Base 12 x 768 x 12 heads, about 110M, GELU. Large 24 x 1024 x 16, about 340M. Original Transformer positions are sine and cosine, not learned.</text>
 </svg>

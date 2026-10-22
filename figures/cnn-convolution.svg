@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="880" height="360" viewBox="0 0 880 360">
   <rect width="880" height="360" fill="#ffffff"/>
-  <text x="24" y="32" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Convolution: one shared 2×2 kernel, stride 1, no padding</text>
-  <text x="24" y="54" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Same 4 weights are reused at every position. That is weight sharing.</text>
-  <g font-family="Consolas, monospace" font-size="16" fill="#0f172a">
-    <text x="24" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Input 3×3</text>
+  <text x="24" y="32" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Convolution: one shared 2x2 kernel, stride 1, no padding</text>
+  <text x="24" y="54" font-family="Arial, sans-serif" font-size="13" fill="#334155">The same 4 weights are reused at every position. That is weight sharing.</text>
+  <g font-family="Consolas, Courier New, monospace" font-size="16" fill="#0f172a">
+    <text x="24" y="92" font-family="Arial, sans-serif" font-size="13" font-weight="700">Input 3x3</text>
     <rect x="24" y="104" width="42" height="42" fill="#fde68a" stroke="#1e3a5f"/>
     <rect x="66" y="104" width="42" height="42" fill="#fde68a" stroke="#1e3a5f"/>
     <rect x="108" y="104" width="42" height="42" fill="#fff" stroke="#1e3a5f"/>
@@ -17,28 +17,32 @@
     <text x="38" y="172">0</text><text x="80" y="172">1</text><text x="122" y="172">2</text>
     <text x="38" y="214">3</text><text x="80" y="214">0</text><text x="122" y="214">1</text>
   </g>
-  <text x="190" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#1e3a5f">×</text>
-  <g font-family="Consolas, monospace" font-size="16" fill="#0f172a">
-    <text x="230" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Kernel</text>
-    <rect x="230" y="104" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/><rect x="272" y="104" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/>
-    <rect x="230" y="146" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/><rect x="272" y="146" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/>
+  <text x="190" y="170" font-family="Arial, sans-serif" font-size="28" fill="#1e3a5f">x</text>
+  <g font-family="Consolas, Courier New, monospace" font-size="16" fill="#0f172a">
+    <text x="230" y="92" font-family="Arial, sans-serif" font-size="13" font-weight="700">Kernel</text>
+    <rect x="230" y="104" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/>
+    <rect x="272" y="104" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/>
+    <rect x="230" y="146" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/>
+    <rect x="272" y="146" width="42" height="42" fill="#bfdbfe" stroke="#1e3a5f"/>
     <text x="244" y="130">1</text><text x="286" y="130">0</text>
     <text x="244" y="172">0</text><text x="286" y="172">1</text>
   </g>
-  <text x="340" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#1e3a5f">’</text>
-  <g font-family="Consolas, monospace" font-size="16" fill="#0f172a">
-    <text x="380" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Feature map 2×2</text>
-    <rect x="380" y="104" width="48" height="48" fill="#bbf7d0" stroke="#1e3a5f"/><rect x="428" y="104" width="48" height="48" fill="#fff" stroke="#1e3a5f"/>
-    <rect x="380" y="152" width="48" height="48" fill="#fff" stroke="#1e3a5f"/><rect x="428" y="152" width="48" height="48" fill="#fff" stroke="#1e3a5f"/>
+  <text x="340" y="170" font-family="Arial, sans-serif" font-size="22" fill="#1e3a5f">-&gt;</text>
+  <g font-family="Consolas, Courier New, monospace" font-size="16" fill="#0f172a">
+    <text x="380" y="92" font-family="Arial, sans-serif" font-size="13" font-weight="700">Feature map 2x2</text>
+    <rect x="380" y="104" width="48" height="48" fill="#bbf7d0" stroke="#1e3a5f"/>
+    <rect x="428" y="104" width="48" height="48" fill="#fff" stroke="#1e3a5f"/>
+    <rect x="380" y="152" width="48" height="48" fill="#fff" stroke="#1e3a5f"/>
+    <rect x="428" y="152" width="48" height="48" fill="#fff" stroke="#1e3a5f"/>
     <text x="396" y="134">2</text><text x="444" y="134">4</text>
     <text x="396" y="182">0</text><text x="444" y="182">2</text>
   </g>
-  <text x="520" y="100" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">First cell (yellow)</text>
-  <text x="520" y="124" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">1×1 + 2×0 + 0×0 + 1×1 = 2</text>
-  <text x="520" y="152" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">Next cell, kernel slides right:</text>
-  <text x="520" y="174" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">2×1 + 3×0 + 1×0 + 2×1 = 4</text>
-  <text x="520" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#334155">Size: (n  f)/s + 1 = (3  2)/1 + 1 = 2</text>
-  <text x="24" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#334155">RGB: one filter has a slice for R, G and B. The three responses are added, so one filter makes one feature map.</text>
-  <text x="24" y="308" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#334155">16 different filters ’ 16 feature maps. Filters differ. Positions of one filter share weights.</text>
-  <text x="24" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#64748b">Redraw the yellow window, the kernel, and the first sum if the question says illustrate convolution.</text>
+  <text x="520" y="100" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">First cell (yellow)</text>
+  <text x="520" y="124" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">1*1 + 2*0 + 0*0 + 1*1 = 2</text>
+  <text x="520" y="152" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">Next cell, kernel slides right:</text>
+  <text x="520" y="174" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">2*1 + 3*0 + 1*0 + 2*1 = 4</text>
+  <text x="520" y="210" font-family="Arial, sans-serif" font-size="14" fill="#334155">Size: (n - f)/s + 1 = (3 - 2)/1 + 1 = 2</text>
+  <text x="24" y="280" font-family="Arial, sans-serif" font-size="14" fill="#334155">RGB: one filter has a slice for R, G and B. The three responses are added, so one filter makes one feature map.</text>
+  <text x="24" y="308" font-family="Arial, sans-serif" font-size="14" fill="#334155">16 different filters make 16 feature maps. Filters differ. Positions of one filter share weights.</text>
+  <text x="24" y="340" font-family="Arial, sans-serif" font-size="13" fill="#64748b">Redraw the yellow window, the kernel, and the first sum if the question says illustrate convolution.</text>
 </svg>

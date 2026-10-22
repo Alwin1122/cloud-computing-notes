@@ -49,7 +49,7 @@ Figures live in `figures/`. Redraw them by hand in the answer booklet. The exami
 
 ## A1. Why a CNN, and the full architecture
 
-A photograph is a grid. A pixel matters because of the pixels next to it. A fully connected net on a \(224 \times 224 \times 3\) image would give every pixel its own weight into every hidden unit. That is a huge number of parameters, and a cat in the left corner and the same cat in the right corner look like different inputs.
+A photograph is a grid. A pixel matters because of the pixels next to it. A fully connected net on a $`224 \times 224 \times 3`$ image would give every pixel its own weight into every hidden unit. That is a huge number of parameters, and a cat in the left corner and the same cat in the right corner look like different inputs.
 
 A CNN slides a small filter across the grid and **reuses the same weights at every position**. Two consequences, both from the lecture:
 
@@ -72,54 +72,60 @@ Dropout randomly drops units **during training**, often 20% to 50% of them. At t
 
 **6 marks.** Draw: image → conv + ReLU → pool → conv + ReLU → pool → flatten → fully connected → softmax. Name the job of each block, and say that dropout is applied in training between the last pool and the first dense layer.
 
-![CNN convolution](figures/cnn-convolution.svg)
+![CNN convolution](figures/cnn-convolution.png)
 
 ## A2. Convolution, the size formula, and the variants
 
-One filter is a small tensor of weights, often \(3 \times 3\) or \(5 \times 5\). Odd size is used so the filter has a **centre pixel**. Place it on the image, multiply element by element, add, write one number, then slide.
+One filter is a small tensor of weights, often $`3 \times 3`$ or $`5 \times 5`$. Odd size is used so the filter has a **centre pixel**. Place it on the image, multiply element by element, add, write one number, then slide.
 
 **Worked example.** Input
 
-\[
+
+```math
 \begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 2 \\ 3 & 0 & 1 \end{bmatrix}
 \quad
 \text{kernel}
 \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
-\]
+```
 
-Stride 1, no padding. Top-left output \(= 1\cdot 1 + 2\cdot 0 + 0\cdot 0 + 1\cdot 1 = 2\). The window then slides right: \(2\cdot 1 + 3\cdot 0 + 1\cdot 0 + 2\cdot 1 = 4\). The feature map is
 
-\[
+Stride 1, no padding. Top-left output $`= 1\cdot 1 + 2\cdot 0 + 0\cdot 0 + 1\cdot 1 = 2`$. The window then slides right: $`2\cdot 1 + 3\cdot 0 + 1\cdot 0 + 2\cdot 1 = 4`$. The feature map is
+
+
+```math
 \begin{bmatrix} 2 & 4 \\ 0 & 2 \end{bmatrix}.
-\]
+```
+
 
 The same four weights produced every output. That is weight sharing. A second filter, with different weights, produces a second feature map. Sixteen filters produce sixteen maps.
 
-**Output size.** Image \(n \times n\), kernel \(f \times f\), stride \(S\), padding \(P\):
+**Output size.** Image $`n \times n`$, kernel $`f \times f`$, stride $`S`$, padding $`P`$:
 
-\[
+
+```math
 \frac{n + 2P - f}{S} + 1.
-\]
+```
 
-Check it. \(n = 5\), \(f = 3\), \(S = 1\), \(P = 0\) gives \((5-3)/1 + 1 = 3\). That is the \(5 \times 5 \to 3 \times 3\) map from class. \(n = 32\), \(f = 5\), \(S = 1\), \(P = 0\) gives 28. With \(P = 2\), the same layer keeps size 32.
+
+Check it. $`n = 5`$, $`f = 3`$, $`S = 1`$, $`P = 0`$ gives $`(5-3)/1 + 1 = 3`$. That is the $`5 \times 5 \to 3 \times 3`$ map from class. $`n = 32`$, $`f = 5`$, $`S = 1`$, $`P = 0`$ gives 28. With $`P = 2`$, the same layer keeps size 32.
 
 ### Variants you must be able to separate
 
 | Variant | What changes | Why it exists |
 |---|---|---|
-| Stride \(S > 1\) | The filter jumps. The map gets smaller. | Downsampling without a separate pool. |
-| Zero padding | A border of zeros. With the right \(P\), height and width stay the same, and border pixels are still filtered. | “Same” convolution. |
+| Stride S > 1 | The filter jumps. The map gets smaller. | Downsampling without a separate pool. |
+| Zero padding | A border of zeros. With the right P, height and width stay the same, and border pixels are still filtered. | “Same” convolution. |
 | Many channels (RGB) | The filter has one slice per input channel. The slice results are **added**, so one filter still makes **one** feature map. | Colour. |
-| \(1 \times 1\) convolution | Looks at a single pixel and mixes the channels. It can change the number of channels. It does not look at neighbours. | Used inside Inception. Local, and cheap depth change. |
-| Stack of \(3 \times 3\) (VGG) | Two stride-1 \(3 \times 3\) layers see as far as one \(5 \times 5\). | \(9+9 = 18\) weights instead of 25 per input channel, and two ReLUs instead of one. Three \(3 \times 3\) layers see as far as one \(7 \times 7\). |
-| Parallel kernel sizes (Inception) | \(1 \times 1\), \(3 \times 3\) and \(5 \times 5\) run at the **same** level and are concatenated. | Width, not only depth. Small kernels see local structure; large kernels see a wider pattern. |
+| 1 x 1 convolution | Looks at a single pixel and mixes the channels. It can change the number of channels. It does not look at neighbours. | Used inside Inception. Local, and cheap depth change. |
+| Stack of 3 x 3 (VGG) | Two stride-1 3 x 3 layers see as far as one 5 x 5. | 9+9 = 18 weights instead of 25 per input channel, and two ReLUs instead of one. Three 3 x 3 layers see as far as one 7 x 7. |
+| Parallel kernel sizes (Inception) | 1 x 1, 3 x 3 and 5 x 5 run at the **same** level and are concatenated. | Width, not only depth. Small kernels see local structure; large kernels see a wider pattern. |
 | Transposed convolution | Learnable upsampling. Used in the decoder of a convolutional autoencoder to grow the map back. | Restores spatial size. It is not the exact mathematical inverse of the encoder’s convolution. |
 
 **MCQ trap.** Weight sharing does **not** mean every filter in the layer is a copy of the first filter. Filters differ. Positions of one filter share weights.
 
 **2 marks.** State the size formula and compute one example.
 
-**10 marks.** Define convolution, compute a \(2 \times 2\) or \(3 \times 3\) example, then explain stride, padding, and multi-channel summation. Close with VGG’s \(3 \times 3\) stack or Inception’s parallel kernels as the “variant” the question is fishing for.
+**10 marks.** Define convolution, compute a $`2 \times 2`$ or $`3 \times 3`$ example, then explain stride, padding, and multi-channel summation. Close with VGG’s $`3 \times 3`$ stack or Inception’s parallel kernels as the “variant” the question is fishing for.
 
 ## A3. Pooling
 
@@ -127,9 +133,10 @@ Pooling shrinks the map. It has **no weights**.
 
 From the lecture, the types are max, min, average, and global (including global average).
 
-**Worked max pool.** Window \(2 \times 2\), stride 2, on
+**Worked max pool.** Window $`2 \times 2`$, stride 2, on
 
-\[
+
+```math
 \begin{bmatrix}
 1 & 3 & 2 & 0 \\
 4 & 2 & 1 & 5 \\
@@ -138,24 +145,25 @@ From the lecture, the types are max, min, average, and global (including global 
 \end{bmatrix}
 \rightarrow
 \begin{bmatrix} 4 & 5 \\ 6 & 7 \end{bmatrix}.
-\]
+```
 
-Average of the same four windows: \(2.5,\ 2,\ 2.25,\ 3.75\).
+
+Average of the same four windows: $`2.5,\ 2,\ 2.25,\ 3.75`$.
 
 If the strong activation only moves inside its window, the max does not change. That is a little translation tolerance. Global average pooling replaces a whole feature map by one number, which cuts the size of the fully connected layers that would otherwise follow.
 
 LeNet uses **average** pooling. AlexNet uses **max** pooling.
 
-![Pooling](figures/cnn-pooling.svg)
+![Pooling](figures/cnn-pooling.png)
 
 ## A4. Local response normalisation and dropout
 
-ReLU is \(\max(0, x)\). Positive values are not squashed, so in a deep net activations can grow. **Local response normalisation** is a non-trainable competition: a locally strong response suppresses its surroundings. This is lateral inhibition.
+ReLU is $`\max(0, x)`$. Positive values are not squashed, so in a deep net activations can grow. **Local response normalisation** is a non-trainable competition: a locally strong response suppresses its surroundings. This is lateral inhibition.
 
 - **Inter-channel** LRN competes across nearby feature maps at one pixel.
 - **Intra-channel** LRN competes across a spatial neighbourhood of the same map.
 
-The lecture’s hyperparameters are \((k, \alpha, \beta, n)\). Do not confuse LRN with batch normalisation. LRN is not trained. Batch normalisation, used in Inception and ResNet, rescales a mini-batch and **is** part of training.
+The lecture’s hyperparameters are $`(k, \alpha, \beta, n)`$. Do not confuse LRN with batch normalisation. LRN is not trained. Batch normalisation, used in Inception and ResNet, rescales a mini-batch and **is** part of training.
 
 ## A5. The named architectures — this comparison is a 10-mark question
 
@@ -163,27 +171,29 @@ Learn this table until you can rewrite it from memory.
 
 | | Input | Parameters | Activation | Pooling | What is special |
 |---|---|---|---|---|---|
-| **LeNet** | \(32 \times 32\) grayscale digits, 10 classes | ~60,000 | tanh, then softmax | average | The small handwritten-digit CNN. Lecture counts conv+pool as 5 stages and 3 fully connected layers. |
-| **AlexNet** | \(227 \times 227 \times 3\), 1000 classes | ~60 million | ReLU, then softmax | max | Dropout between last pool and first dense layer. LRN. |
+| **LeNet** | 32 x 32 grayscale digits, 10 classes | ~60,000 | tanh, then softmax | average | The small handwritten-digit CNN. Lecture counts conv+pool as 5 stages and 3 fully connected layers. |
+| **AlexNet** | 227 x 227 x 3, 1000 classes | ~60 million | ReLU, then softmax | max | Dropout between last pool and first dense layer. LRN. |
 | **ZFNet** | AlexNet-style | — | — | — | Same idea as AlexNet, hyperparameters adjusted. |
-| **VGG** | \(224 \times 224 \times 3\) | ~138 million | ReLU | max (5 pools) | 13 convolutions of \(3 \times 3\), 3 fully connected layers. VGG-19 is one version. Large kernels are replaced by stacks of small ones. |
+| **VGG** | 224 x 224 x 3 | ~138 million | ReLU | max (5 pools) | 13 convolutions of 3 x 3, 3 fully connected layers. VGG-19 is one version. Large kernels are replaced by stacks of small ones. |
 | **Inception (GoogLeNet)** | ImageNet-scale | much lighter than VGG | ReLU | inside the module | Several filter sizes **in parallel** at one level. Batch norm. RMSprop. |
 | **ResNet** | ImageNet-scale | ~11 million in the lecture’s figure | ReLU | yes | Skip connections, because a plain very deep net gets worse (vanishing gradient). Batch norm. |
 
-**Why ResNet works.** A plain stack has to learn the whole mapping \(H(x)\). A residual block learns \(F(x) = H(x) - x\), and the output is
+**Why ResNet works.** A plain stack has to learn the whole mapping $`H(x)`$. A residual block learns $`F(x) = H(x) - x`$, and the output is
 
-\[
+
+```math
 y = F(x) + x.
-\]
+```
 
-If the best mapping is “do nothing”, \(F\) can be near zero, which is easier than forcing many nonlinear layers to copy \(x\). The addition is also a path for the gradient that does not pass through every weight. The LSTM section uses the same idea through time. Say that sentence in both answers.
 
-- **Identity** shortcut: \(x\) is added as it is, because the shapes already match.
-- **Projection** shortcut: channels or spatial size changed, so a \(1 \times 1\) convolution maps \(x\) to the right shape before the addition.
+If the best mapping is “do nothing”, $`F`$ can be near zero, which is easier than forcing many nonlinear layers to copy $`x`$. The addition is also a path for the gradient that does not pass through every weight. The LSTM section uses the same idea through time. Say that sentence in both answers.
 
-![ResNet and Inception](figures/resnet-inception.svg)
+- **Identity** shortcut: $`x`$ is added as it is, because the shapes already match.
+- **Projection** shortcut: channels or spatial size changed, so a $`1 \times 1`$ convolution maps $`x`$ to the right shape before the addition.
 
-**10-mark skeleton.** Draw LeNet’s pipeline in one line, then the table above in sentences (you will not have a ruled table in the booklet: write “LeNet … whereas AlexNet …”). Spend the last third on VGG’s parameter argument (\(18\) vs \(25\)) and ResNet’s equation \(y = F(x)+x\). Name identity versus projection.
+![ResNet and Inception](figures/resnet-inception.png)
+
+**10-mark skeleton.** Draw LeNet’s pipeline in one line, then the table above in sentences (you will not have a ruled table in the booklet: write “LeNet … whereas AlexNet …”). Spend the last third on VGG’s parameter argument ($`18`$ vs $`25`$) and ResNet’s equation $`y = F(x)+x`$. Name identity versus projection.
 
 ## A6. Object recognition and computer vision
 
@@ -219,7 +229,7 @@ This is the same idea as BERT later: expensive pretraining once, cheap adaptatio
 
 ## A8. What Unit A looks like in the MCQ paper
 
-The option is wrong if it says LeNet uses ReLU and max pooling, or AlexNet has 60,000 parameters, or VGG’s input is \(32 \times 32\), or a \(1 \times 1\) filter looks at a \(5 \times 5\) neighbourhood, or dropout is applied only at test time, or the skip connection is there to increase the parameter count.
+The option is wrong if it says LeNet uses ReLU and max pooling, or AlexNet has 60,000 parameters, or VGG’s input is $`32 \times 32`$, or a $`1 \times 1`$ filter looks at a $`5 \times 5`$ neighbourhood, or dropout is applied only at test time, or the skip connection is there to increase the parameter count.
 
 ---
 
@@ -229,23 +239,25 @@ The option is wrong if it says LeNet uses ReLU and max pooling, or AlexNet has 6
 
 A sequence is ordered. “Dog bites man” and “man bites dog” use the same words and mean different things. Speech, an ECG, a video, and a stock series are the same kind of object: each step depends on what came before, and the length is not fixed.
 
-A convolution looks inside a window, then forgets the window. It has no state. An RNN adds a **hidden state** \(h\), updated at every step, with the **same weights** at every step. Sharing across time is the cousin of a CNN sharing a filter across space. Say that. It is in the lecture notes on purpose.
+A convolution looks inside a window, then forgets the window. It has no state. An RNN adds a **hidden state** $`h`$, updated at every step, with the **same weights** at every step. Sharing across time is the cousin of a CNN sharing a filter across space. Say that. It is in the lecture notes on purpose.
 
 ## B2. The RNN cell
 
-\[
+
+```math
 h_t = \tanh(W_{xh} x_t + W_{hh} h_{t-1} + b_h), \qquad y_t = W_{hy} h_t + b_y.
-\]
+```
 
-\(x_t\) is the input now. \(h_{t-1}\) is the memory. \(W_{xh}\) reads the input. \(W_{hh}\) carries memory. \(W_{hy}\) turns memory into a prediction. Unrolling draws the cell many times. Those boxes are **one** cell. They do not have private weights.
 
-**Worked scalar example from class.** \(x = (1,\ 0.5,\ -1)\), \(W_{xh} = 0.5\), \(W_{hh} = 0.8\), \(b_h = 0.1\), \(W_{hy} = 1\), \(b_y = 0\), \(h_0 = 0\).
+$`x_t`$ is the input now. $`h_{t-1}`$ is the memory. $`W_{xh}`$ reads the input. $`W_{hh}`$ carries memory. $`W_{hy}`$ turns memory into a prediction. Unrolling draws the cell many times. Those boxes are **one** cell. They do not have private weights.
 
-- \(t = 1\): \(\tanh(0.5\cdot 1 + 0.8\cdot 0 + 0.1) = \tanh(0.6) = 0.537\). So \(y_1 = 0.537\). The memory term is zero because \(h_0 = 0\).
-- \(t = 2\): \(\tanh(0.5\cdot 0.5 + 0.8\cdot 0.537 + 0.1) = \tanh(0.780) = 0.652\).
-- \(t = 3\): \(\tanh(0.5\cdot(-1) + 0.8\cdot 0.652 + 0.1) = \tanh(0.122) = 0.121\).
+**Worked scalar example from class.** $`x = (1,\ 0.5,\ -1)`$, $`W_{xh} = 0.5`$, $`W_{hh} = 0.8`$, $`b_h = 0.1`$, $`W_{hy} = 1`$, $`b_y = 0`$, $`h_0 = 0`$.
 
-The same five numbers were used at every step. \(y_3\) still depends on \(x_1\), but only through the chain of hidden states.
+- $`t = 1`$: $`\tanh(0.5\cdot 1 + 0.8\cdot 0 + 0.1) = \tanh(0.6) = 0.537`$. So $`y_1 = 0.537`$. The memory term is zero because $`h_0 = 0`$.
+- $`t = 2`$: $`\tanh(0.5\cdot 0.5 + 0.8\cdot 0.537 + 0.1) = \tanh(0.780) = 0.652`$.
+- $`t = 3`$: $`\tanh(0.5\cdot(-1) + 0.8\cdot 0.652 + 0.1) = \tanh(0.122) = 0.121`$.
+
+The same five numbers were used at every step. $`y_3`$ still depends on $`x_1`$, but only through the chain of hidden states.
 
 ### Shapes of problem
 
@@ -259,32 +271,34 @@ The same five numbers were used at every step. \(y_3\) still depends on \(x_1\),
 
 ## B3. BPTT — how the shared weights are trained
 
-The loss is the **sum** of the per-step losses, \(L = \sum_t L_t\). For softmax and cross-entropy, \(L_t = -\sum y_t \log \hat{y}_t\), and the output error is \(\hat{y}_t - y_t\). The tanh slope is \(1 - h_t^2\).
+The loss is the **sum** of the per-step losses, $`L = \sum_t L_t`$. For softmax and cross-entropy, $`L_t = -\sum y_t \log \hat{y}_t`$, and the output error is $`\hat{y}_t - y_t`$. The tanh slope is $`1 - h_t^2`$.
 
 Training unrolls the net, runs the forward pass, then walks **backward from the last step**. A shared weight appears once per step, so
 
-\[
+
+```math
 \frac{\partial L}{\partial W} = \sum_t \frac{\partial L}{\partial W^{(t)}}.
-\]
+```
+
 
 That sum is the only new rule. BPTT is ordinary backpropagation on the unrolled graph.
 
-**Which matrix needs the through-time path?** \(W_{hy}\) is used after \(h_t\) already exists, so its gradient is a sum of local terms. \(W_{xh}\) and \(W_{hh}\) sit inside \(h_{t-1} \to h_t\). Changing them changes every later state, so the error must be carried back through \(W_{hh}^\top\).
+**Which matrix needs the through-time path?** $`W_{hy}`$ is used after $`h_t`$ already exists, so its gradient is a sum of local terms. $`W_{xh}`$ and $`W_{hh}`$ sit inside $`h_{t-1} \to h_t`$. Changing them changes every later state, so the error must be carried back through $`W_{hh}^\top`$.
 
 The efficient backward step from the lecture:
 
-1. Output error \(\partial L / \partial o_t = \hat{y}_t - y_t\).
-2. Error at the hidden state \(=\) this step’s output error \(+\) the error flowing back from step \(t+1\).
-3. Multiply by \(1 - h_t^2\) to pass through tanh. Call the result \(\delta_t\).
-4. \(\partial L / \partial W_{xh} = \sum_t \delta_t x_t^\top\).
+1. Output error $`\partial L / \partial o_t = \hat{y}_t - y_t`$.
+2. Error at the hidden state $`=`$ this step’s output error $`+`$ the error flowing back from step $`t+1`$.
+3. Multiply by $`1 - h_t^2`$ to pass through tanh. Call the result $`\delta_t`$.
+4. $`\partial L / \partial W_{xh} = \sum_t \delta_t x_t^\top`$.
 
-With a one-hot input, step \(t\) writes into **one column**, the column of the character that was read. In the “hope” example the inputs are h, o, p and the targets are o, p, e. The column for **e** stays zero because e is never an input. The column for **h** changes once later losses are allowed to flow back. If you drop the \(W_{hh}^\top \delta_{t+1}\) term, the early columns are simply wrong. One update in class moved the loss from \(3.808\) to \(3.777\).
+With a one-hot input, step $`t`$ writes into **one column**, the column of the character that was read. In the “hope” example the inputs are h, o, p and the targets are o, p, e. The column for **e** stays zero because e is never an input. The column for **h** changes once later losses are allowed to flow back. If you drop the $`W_{hh}^\top \delta_{t+1}`$ term, the early columns are simply wrong. One update in class moved the loss from $`3.808`$ to $`3.777`$.
 
-**Vanishing gradient.** Each step multiplies the error by a weight times a tanh slope. Ten factors of \(0.5\) leave about \(0.001\). Early words stop teaching the weights. “Ravi, who grew up in Coimbatore and studied at PSG Tech …, says ___” should be completed by “he”. A plain RNN has usually forgotten “Ravi”. Exploding is the opposite illness: the factors are larger than 1 and the update blows up. LSTM’s cell state is aimed at the vanishing case.
+**Vanishing gradient.** Each step multiplies the error by a weight times a tanh slope. Ten factors of $`0.5`$ leave about $`0.001`$. Early words stop teaching the weights. “Ravi, who grew up in Coimbatore and studied at PSG Tech …, says ___” should be completed by “he”. A plain RNN has usually forgotten “Ravi”. Exploding is the opposite illness: the factors are larger than 1 and the update blows up. LSTM’s cell state is aimed at the vanishing case.
 
-**10 marks.** Draw the unroll. Write \(h_t\). Say the gradient of a shared weight is a sum over time. Say which of \(W_{xh}\), \(W_{hh}\), \(W_{hy}\) needs the through-time term. Give the Ravi sentence as the symptom, and the product of slopes as the cause. Do not skip the sum-over-copies sentence. It is the definition of BPTT.
+**10 marks.** Draw the unroll. Write $`h_t`$. Say the gradient of a shared weight is a sum over time. Say which of $`W_{xh}`$, $`W_{hh}`$, $`W_{hy}`$ needs the through-time term. Give the Ravi sentence as the symptom, and the product of slopes as the cause. Do not skip the sum-over-copies sentence. It is the definition of BPTT.
 
-![RNN, LSTM, GRU](figures/rnn-lstm-gru.svg)
+![RNN, LSTM, GRU](figures/rnn-lstm-gru.png)
 
 ## B4. Bidirectional RNN
 
@@ -298,11 +312,11 @@ A stacked (deep) RNN puts another RNN on top of the first. The lower layer must 
 
 Translation and speech-to-text have unequal lengths. The encoder reads the whole input. In the plain RNN version, the decoder is started from **one vector**, the encoder’s last hidden state. The decoder then writes one output token at a time.
 
-That single vector is the bottleneck. A long sentence does not fit cleanly inside one \(h\). Attention, and then the Transformer, keep **one vector per input token** and let the decoder look them up. When a question says “limitation of the basic encoder–decoder”, the answer is this bottleneck, not “RNNs cannot use words”.
+That single vector is the bottleneck. A long sentence does not fit cleanly inside one $`h`$. Attention, and then the Transformer, keep **one vector per input token** and let the decoder look them up. When a question says “limitation of the basic encoder–decoder”, the answer is this bottleneck, not “RNNs cannot use words”.
 
 ## B6. Recursive nets
 
-A **recurrent** net walks a chain: \(h_t\) comes from \(h_{t-1}\).
+A **recurrent** net walks a chain: $`h_t`$ comes from $`h_{t-1}`$.
 
 A **recursive** net walks a tree. The same composition function builds a parent from its children. For the phrase “not very good”, the net can first compose “very good” and then apply “not”. The tree is usually a syntactic parse. Phrase-level sentiment is the standard example.
 
@@ -310,74 +324,95 @@ Bidirectional and stacked RNNs are still chains. Do not pick them as the definit
 
 ## B7. LSTM
 
-Hochreiter and Schmidhuber, 1997. A plain RNN rewrites its only memory every step, like wiping a whiteboard. An LSTM keeps a **cell state** \(C\), a notebook you edit line by line, and a **hidden state** \(h\), the line you show to the next step and to the output.
+Hochreiter and Schmidhuber, 1997. A plain RNN rewrites its only memory every step, like wiping a whiteboard. An LSTM keeps a **cell state** $`C`$, a notebook you edit line by line, and a **hidden state** $`h`$, the line you show to the next step and to the output.
 
-Four small RNN steps run in parallel, each with its own weights. Gates use a sigmoid, a valve in \((0, 1)\). The candidate uses tanh, so the new note lies in \((-1, 1)\).
+Four small RNN steps run in parallel, each with its own weights. Gates use a sigmoid, a valve in $`(0, 1)`$. The candidate uses tanh, so the new note lies in $`(-1, 1)`$.
+
+```math
+\begin{align*}
+f_t &= \sigma(W_f x_t + U_f h_{t-1} + b_f) \\
+i_t &= \sigma(W_i x_t + U_i h_{t-1} + b_i) \\
+\tilde{C}_t &= \tanh(W_c x_t + U_c h_{t-1} + b_c) \\
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \\
+o_t &= \sigma(W_o x_t + U_o h_{t-1} + b_o) \\
+h_t &= o_t \odot \tanh(C_t)
+\end{align*}
+```
 
 | Part | Question it answers | Equation |
 |---|---|---|
-| Forget \(f_t\) | What old memory do I erase? | \(\sigma(W_f x_t + U_f h_{t-1} + b_f)\) |
-| Input \(i_t\) | How much of the new note do I write? | \(\sigma(W_i x_t + U_i h_{t-1} + b_i)\) |
-| Candidate \(\tilde{C}_t\) | What is the new note? | \(\tanh(W_c x_t + U_c h_{t-1} + b_c)\) |
-| Cell | Keep some old, add some new | \(C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t\) |
-| Output \(o_t\) | What do I show now? | \(\sigma(W_o x_t + U_o h_{t-1} + b_o)\) |
-| Hidden | The value passed on | \(h_t = o_t \odot \tanh(C_t)\) |
+| Forget f_t | What old memory do I erase? | sigmoid(W_f x_t + U_f h_(t-1) + b_f) |
+| Input i_t | How much of the new note do I write? | sigmoid(W_i x_t + U_i h_(t-1) + b_i) |
+| Candidate C~_t | What is the new note? | tanh(W_c x_t + U_c h_(t-1) + b_c) |
+| Cell | Keep some old, add some new | C_t = f_t * C_(t-1) + i_t * C~_t |
+| Output o_t | What do I show now? | sigmoid(W_o x_t + U_o h_(t-1) + b_o) |
+| Hidden | The value passed on | h_t = o_t * tanh(C_t) |
 
-\(\odot\) is element-wise. Each memory slot has its own gate value.
+$`\odot`$ is element-wise. Each memory slot has its own gate value.
 
-**Numbers from class.** \(C_{t-1} = 0.8\), \(f = 0.9\), \(i = 0.5\), \(\tilde{C} = 0.6\), \(o = 0.7\).
+**Numbers from class.** $`C_{t-1} = 0.8`$, $`f = 0.9`$, $`i = 0.5`$, $`\tilde{C} = 0.6`$, $`o = 0.7`$.
 
-\[
+
+```math
 C_t = 0.9 \times 0.8 + 0.5 \times 0.6 = 0.72 + 0.30 = 1.02,
-\]
-\[
+```
+
+
+```math
 h_t = 0.7 \times \tanh(1.02) = 0.7 \times 0.770 = 0.539.
-\]
+```
 
-If \(f_t = 0\), the old cell is gone and \(C_t = 0.30\) only.
 
-**Why the gradient survives.** Going backward along \(C\), the multiplier is the forget gate, not a tanh slope. The net learns to hold \(f\) near 1 when the fact is still needed. \(0.9^{10} \approx 0.35\), while \(0.5^{10} \approx 0.001\). The cell path is multiply-and-add, with no squash on the addition itself. Same idea as ResNet’s skip, applied through time instead of depth.
+If $`f_t = 0`$, the old cell is gone and $`C_t = 0.30`$ only.
 
-The output gate is why memory and “what we say now” can differ. “Ravi” can sit in \(C\) through the long clause, and \(o\) opens only at “says ___”, exposing “singular, male” so the model predicts “he”.
+**Why the gradient survives.** Going backward along $`C`$, the multiplier is the forget gate, not a tanh slope. The net learns to hold $`f`$ near 1 when the fact is still needed. $`0.9^{10} \approx 0.35`$, while $`0.5^{10} \approx 0.001`$. The cell path is multiply-and-add, with no squash on the addition itself. Same idea as ResNet’s skip, applied through time instead of depth.
 
-**6 marks.** Two memories, three gates plus the candidate, both equations, and the sentence about \(f \approx 1\).
+The output gate is why memory and “what we say now” can differ. “Ravi” can sit in $`C`$ through the long clause, and $`o`$ opens only at “says ___”, exposing “singular, male” so the model predicts “he”.
+
+**6 marks.** Two memories, three gates plus the candidate, both equations, and the sentence about $`f \approx 1`$.
 
 ## B8. GRU, the lighter LSTM
 
 Cho et al., 2014. Three simplifications:
 
-- cell and hidden state are merged into one \(h\);
-- forget and input are tied into one **update** gate \(z\), so the keep fraction and the write fraction sum to 1;
-- there is no output gate, so the whole \(h\) is exposed;
-- a **reset** gate \(r\) decides how much of the past is used while writing the candidate.
+- cell and hidden state are merged into one $`h`$;
+- forget and input are tied into one **update** gate $`z`$, so the keep fraction and the write fraction sum to 1;
+- there is no output gate, so the whole $`h`$ is exposed;
+- a **reset** gate $`r`$ decides how much of the past is used while writing the candidate.
 
 Lecture equations, in the order you should memorise:
 
-\[
+
+```math
 \begin{align*}
 r_t &= \sigma(W_r x_t + U_r h_{t-1} + b_r), \\
 z_t &= \sigma(W_z x_t + U_z h_{t-1} + b_z), \\
 \tilde{h}_t &= \tanh\big(W_h x_t + U_h (r_t \odot h_{t-1}) + b_h\big), \\
 h_t &= (1 - z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t.
 \end{align*}
-\]
+```
 
-Read \(z\) as the mixer tap. \(z = 0.2\) keeps 80% and writes 20%. \(z = 0\) copies \(h_{t-1}\) unchanged, and the backward factor \((1-z)\) is 1, so the gradient passes. \(z = 1\) throws the old state away. \(r = 0\) builds the candidate from the current input alone.
 
-**Numbers from class.** \(h_{t-1} = 0.8\), \(r = 0.5\), \(z = 0.3\), and \(W_h x_t = 0.4\), \(U_h = 1\), \(b_h = 0\).
+Read $`z`$ as the mixer tap. $`z = 0.2`$ keeps 80% and writes 20%. $`z = 0`$ copies $`h_{t-1}`$ unchanged, and the backward factor $`(1-z)`$ is 1, so the gradient passes. $`z = 1`$ throws the old state away. $`r = 0`$ builds the candidate from the current input alone.
 
-\[
+**Numbers from class.** $`h_{t-1} = 0.8`$, $`r = 0.5`$, $`z = 0.3`$, and $`W_h x_t = 0.4`$, $`U_h = 1`$, $`b_h = 0`$.
+
+
+```math
 \tilde{h} = \tanh(0.4 + 1\cdot(0.5 \cdot 0.8)) = \tanh(0.8) = 0.664,
-\]
-\[
-h_t = 0.7 \times 0.8 + 0.3 \times 0.664 = 0.560 + 0.199 = 0.759.
-\]
+```
 
-Some code, including a common PyTorch form, writes \(h_t = z_t \odot h_{t-1} + (1-z_t)\odot \tilde{h}_t\). The mixer is the same. The **meaning of the letter \(z\)** has flipped. In an exam, use the lecture form unless the question prints the other one.
+
+```math
+h_t = 0.7 \times 0.8 + 0.3 \times 0.664 = 0.560 + 0.199 = 0.759.
+```
+
+
+Some code, including a common PyTorch form, writes $`h_t = z_t \odot h_{t-1} + (1-z_t)\odot \tilde{h}_t`$. The mixer is the same. The **meaning of the letter $`z`$** has flipped. In an exam, use the lecture form unless the question prints the other one.
 
 | | RNN | LSTM | GRU |
 |---|---|---|---|
-| Memory | \(h\) only, fully rewritten | \(C\) long, \(h\) short | \(h\) only |
+| Memory | h only, fully rewritten | C long, h short | h only |
 | Gates | none | forget, input, output | reset, update |
 | Weight sets | 1 | 4 | 3 |
 | Long range | weak, about 10 steps | strong | strong |
@@ -385,7 +420,7 @@ Some code, including a common PyTorch form, writes \(h_t = z_t \odot h_{t-1} + (
 
 `GRU(128)` has about three-quarters the parameters of `LSTM(128)`. Chung et al. (2014) found them comparable on music and speech. Neither wins every task. A bidirectional GRU is allowed: wrap the cell, do not invent a new one.
 
-**The Ravi story in GRU language.** At a new sentence, \(r \approx 0\), so the candidate ignores stale context. While the clause “who grew up in Coimbatore…” is read, \(z \approx 0\), so “Ravi, singular, male” is copied forward. At the word “Ravi” itself, \(z \approx 1\) and the new subject is written.
+**The Ravi story in GRU language.** At a new sentence, $`r \approx 0`$, so the candidate ignores stale context. While the clause “who grew up in Coimbatore…” is read, $`z \approx 0`$, so “Ravi, singular, male” is copied forward. At the word “Ravi” itself, $`z \approx 1`$ and the new subject is written.
 
 ## B9. Attention
 
@@ -397,27 +432,31 @@ Each word is projected three ways:
 - **Key** — what can I be matched on?
 - **Value** — what do I hand over if I am chosen?
 
-\[
+
+```math
 \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) V.
-\]
+```
 
-The softmax is along each row, so the weights that mix the values **sum to 1**. Dividing by \(\sqrt{d_k}\) matters: if \(d_k\) is large, the dots are large, softmax becomes nearly one-hot, and the gradient dies.
 
-**Toy numbers from the lecture, one head, \(d_k = 2\).** After the projections, the scores \(QK^\top\) for “I / love / AI” are
+The softmax is along each row, so the weights that mix the values **sum to 1**. Dividing by $`\sqrt{d_k}`$ matters: if $`d_k`$ is large, the dots are large, softmax becomes nearly one-hot, and the gradient dies.
 
-\[
+**Toy numbers from the lecture, one head, $`d_k = 2`$.** After the projections, the scores $`QK^\top`$ for “I / love / AI” are
+
+
+```math
 \begin{bmatrix} 0 & 4 & 4 \\ 4 & 0 & 4 \\ 4 & 4 & 8 \end{bmatrix}.
-\]
+```
 
-Divide by \(\sqrt{2} \approx 1.41\), then softmax. The first row becomes about \((0.029,\ 0.486,\ 0.486)\). So “I” is rebuilt mostly from “love” and “AI”. You do not need to recompute the exponentials in the exam unless the question gives you the scores. You do need to say: scale, then softmax, then a weighted sum of values.
 
-**Multi-head.** The original model runs this 8 times with different \(W_Q, W_K, W_V\), each of width 64. Concatenate \(8 \times 64 = 512\), then a matrix \(W_O\) mixes the heads. Cost is about one big attention. Different heads can specialise (a pronoun and its noun, a verb and its subject). Nobody programs that specialisation. It is learned.
+Divide by $`\sqrt{2} \approx 1.41`$, then softmax. The first row becomes about $`(0.029,\ 0.486,\ 0.486)`$. So “I” is rebuilt mostly from “love” and “AI”. You do not need to recompute the exponentials in the exam unless the question gives you the scores. You do need to say: scale, then softmax, then a weighted sum of values.
+
+**Multi-head.** The original model runs this 8 times with different $`W_Q, W_K, W_V`$, each of width 64. Concatenate $`8 \times 64 = 512`$, then a matrix $`W_O`$ mixes the heads. Cost is about one big attention. Different heads can specialise (a pronoun and its noun, a verb and its subject). Nobody programs that specialisation. It is learned.
 
 Three places this block appears in the full Transformer:
 
 1. **Encoder self-attention.** Q, K, V all from the source. No mask. Every source word sees every source word.
-2. **Masked decoder self-attention.** Q, K, V from the target words so far. Future scores are set to \(-\infty\) before the softmax, which becomes weight 0. Position \(t\) cannot see the answer it is supposed to predict.
-3. **Cross-attention.** Q from the decoder. K and V from the encoder output \(M\). This is where the German word looks at the English words.
+2. **Masked decoder self-attention.** Q, K, V from the target words so far. Future scores are set to $`-\infty`$ before the softmax, which becomes weight 0. Position $`t`$ cannot see the answer it is supposed to predict.
+3. **Cross-attention.** Q from the decoder. K and V from the encoder output $`M`$. This is where the German word looks at the English words.
 
 ## B10. The Transformer
 
@@ -425,28 +464,32 @@ Vaswani et al., 2017, “Attention Is All You Need”. Recurrence is removed. Ev
 
 **Positional encoding must be added**, element by element, not concatenated. Attention treats its input as a set. Without a position signal, “dog bites man” and “man bites dog” are the same bag of vectors. The original paper uses
 
-\[
+
+```math
 PE(pos, 2i) = \sin(pos / 10000^{2i/d}), \qquad PE(pos, 2i+1) = \cos(pos / 10000^{2i/d}).
-\]
+```
 
-Even dimensions take sine, odd take cosine, of one shared angle. Adding keeps the width equal to \(d_{\text{model}}\). A shift of position is a linear function of that sine–cosine pair, so relative position can be learned. BERT later **learns** the position vectors instead, and only up to 512.
 
-Each sublayer is wrapped as \(\mathrm{LayerNorm}(x + \mathrm{Sublayer}(x))\). The residual is the same skip idea as ResNet. The feed-forward block is applied **to each position separately**,
+Even dimensions take sine, odd take cosine, of one shared angle. Adding keeps the width equal to $`d_{\text{model}}`$. A shift of position is a linear function of that sine–cosine pair, so relative position can be learned. BERT later **learns** the position vectors instead, and only up to 512.
 
-\[
+Each sublayer is wrapped as $`\mathrm{LayerNorm}(x + \mathrm{Sublayer}(x))`$. The residual is the same skip idea as ResNet. The feed-forward block is applied **to each position separately**,
+
+
+```math
 \mathrm{FFN}(x) = \max(0,\ xW_1 + b_1)W_2 + b_2,
-\]
+```
+
 
 expanding 512 to 2048 and back, with the same weights at every position. Attention mixes **across** words. The feed-forward block transforms **inside** one word.
 
 **The “I love AI” → “Ich liebe KI” picture.**
 
-- Encoder runs **once**. Tokenise, embed, add positions, then 6 layers. Output \(M\): one vector per English word. The encoder never sees German.
-- Decoder writes one German word at a time. Its input is the target shifted right, starting from `<s>`. It may look at its own past (masked) and at \(M\) (cross-attention). It may not look at future German words.
+- Encoder runs **once**. Tokenise, embed, add positions, then 6 layers. Output $`M`$: one vector per English word. The encoder never sees German.
+- Decoder writes one German word at a time. Its input is the target shifted right, starting from `<s>`. It may look at its own past (masked) and at $`M`$ (cross-attention). It may not look at future German words.
 - Training uses **teacher forcing**: the gold target is fed, shifted by one, and every next-token loss is computed in parallel. The loss is cross-entropy. The original training recipe also uses Adam with a warm-up, dropout 0.1, and label smoothing 0.1.
-- At inference, append the chosen word and run the decoder again until `</s>`. **Greedy** decoding keeps the single best next word. **Beam search** keeps several partial sentences (the lecture illustrates a beam of 4). \(M\) is not recomputed.
+- At inference, append the chosen word and run the decoder again until `</s>`. **Greedy** decoding keeps the single best next word. **Beam search** keeps several partial sentences (the lecture illustrates a beam of 4). $`M`$ is not recomputed.
 
-Original base model: 6 encoder layers and 6 decoder layers, \(d_{\text{model}} = 512\), 8 heads, \(d_k = 64\), feed-forward width 2048, about 65 million parameters.
+Original base model: 6 encoder layers and 6 decoder layers, $`d_{\text{model}} = 512`$, 8 heads, $`d_k = 64`$, feed-forward width 2048, about 65 million parameters.
 
 Families, which the MCQ paper loves:
 
@@ -456,7 +499,7 @@ Families, which the MCQ paper loves:
 | Encoder-only | BERT, RoBERTa | the whole input, both directions | classification, entities, extractive QA |
 | Decoder-only | GPT, LLaMA | only tokens on the left | generation, chat, code |
 
-![Transformer and BERT input](figures/transformer-bert.svg)
+![Transformer and BERT input](figures/transformer-bert.png)
 
 **10 marks.** Draw both towers. Mark the three attentions and where Q, K, V come from. Write the scaled-dot-product formula and say why the square root is there. Say why positions are added. Say encoder once, decoder per output word.
 
@@ -497,20 +540,20 @@ Devlin et al., 2019. BERT is a stack of Transformer **encoder** layers. There is
 
 The embedding **table** is still one row per WordPiece. Context appears only after attention. That is why the same piece gets different output vectors in “I ate an apple” and “Apple released a phone”.
 
-**Input of one token** \(=\) token embedding \(+\) segment embedding \(+\) position embedding. They are summed. `[CLS]` starts every sequence; its output \(C\) is the sentence vector. `[SEP]` ends a segment. WordPiece (about 30,000 pieces) splits rare words: “playing” can become “play” + “##ing”.
+**Input of one token** $`=`$ token embedding $`+`$ segment embedding $`+`$ position embedding. They are summed. `[CLS]` starts every sequence; its output $`C`$ is the sentence vector. `[SEP]` ends a segment. WordPiece (about 30,000 pieces) splits rare words: “playing” can become “play” + “##ing”.
 
 **Pretraining, once, on unlabeled books and Wikipedia.**
 
 1. **Masked language model.** Choose 15% of positions. Of those, 80% become `[MASK]`, 10% become a random word, 10% stay unchanged. Predict the original piece, but put the loss **only** on the chosen positions. The other words stay visible, so looking both ways does not make the task trivial. The 10% unchanged case exists because `[MASK]` is common in pretraining and absent at fine-tuning. The model must still understand a token it actually sees.
-2. **Next-sentence prediction.** From \(C\), decide IsNext or NotNext. Half the time sentence B really follows A. The two losses are added. Question answering needs the relation between two texts, which masked words alone do not teach. RoBERTa later dropped this task and still improved, by training longer on more data. Know that, in case the question asks for a limitation of the original recipe.
+2. **Next-sentence prediction.** From $`C`$, decide IsNext or NotNext. Half the time sentence B really follows A. The two losses are added. Question answering needs the relation between two texts, which masked words alone do not teach. RoBERTa later dropped this task and still improved, by training longer on more data. Know that, in case the question asks for a limitation of the original recipe.
 
-**Fine-tuning is transfer learning.** Add one small head. Update the stacked weights on a labeled set for a few epochs, with a small learning rate (\(5\times 10^{-5}\), \(3\times 10^{-5}\), or \(2\times 10^{-5}\) in the paper). Sentence tasks read \(C\). Token tasks read every \(T_i\).
+**Fine-tuning is transfer learning.** Add one small head. Update the stacked weights on a labeled set for a few epochs, with a small learning rate ($`5\times 10^{-5}`$, $`3\times 10^{-5}`$, or $`2\times 10^{-5}`$ in the paper). Sentence tasks read $`C`$. Token tasks read every $`T_i`$.
 
 **Extractive question answering (SQuAD).** The answer is a span copied from the passage, not a sentence the model writes.
 
 - Pack `[CLS] question [SEP] passage [SEP]`. Question is segment A. Passage is segment B.
-- Fine-tuning learns two new vectors, \(S\) and \(E\). Start score of token \(i\) is \(S \cdot T_i\). End score is \(E \cdot T_i\).
-- A legal span has end \(\ge\) start, lies inside the passage, and is not huge (about 30 tokens in the usual implementation). Its score is start score plus end score.
+- Fine-tuning learns two new vectors, $`S`$ and $`E`$. Start score of token $`i`$ is $`S \cdot T_i`$. End score is $`E \cdot T_i`$.
+- A legal span has end $`\ge`$ start, lies inside the passage, and is not huge (about 30 tokens in the usual implementation). Its score is start score plus end score.
 - The lecture’s running example: “When was the Transformer introduced?” answered by pointing at “2017” in the passage. Both start and end land on that token.
 - SQuAD 1.1: every question has an answer in the passage. SQuAD 2.0: some do not. “No answer” is the span at `[CLS]`. Return a real span only if it beats that null score by a margin.
 - A deployed system still needs a **retriever** (BM25 or a dense search). BERT reads at most 512 tokens, so something else must pick a few passages out of a large collection.
@@ -530,17 +573,19 @@ The Transformer does not know that its tokens came from words. Cut the signal in
 
 # Unit C — Unsupervised models
 
-An unsupervised model is not handed a class label. It has to find structure in \(x\). Self-supervised is the special case where the target is built from \(x\) itself (reconstruct \(x\), predict a masked word). Semi-supervised, at the end of this unit, is the case with a **few** real labels and a large unlabeled set. Do not mix the three words up. The MCQs are written to catch that mix-up.
+An unsupervised model is not handed a class label. It has to find structure in $`x`$. Self-supervised is the special case where the target is built from $`x`$ itself (reconstruct $`x`$, predict a masked word). Semi-supervised, at the end of this unit, is the case with a **few** real labels and a large unlabeled set. Do not mix the three words up. The MCQs are written to catch that mix-up.
 
 ## C1. What an autoencoder is
 
-An autoencoder writes \(\hat{x}\) and is trained so that \(\hat{x}\) is close to \(x\). No labels. The useful object is not \(\hat{x}\). It is the short code \(z\) in the middle. After training, the decoder is often thrown away and the encoder is kept as a feature extractor.
+An autoencoder writes $`\hat{x}`$ and is trained so that $`\hat{x}`$ is close to $`x`$. No labels. The useful object is not $`\hat{x}`$. It is the short code $`z`$ in the middle. After training, the decoder is often thrown away and the encoder is kept as a feature extractor.
 
-\[
+
+```math
 z = f_\theta(x), \qquad \hat{x} = g_\phi(z), \qquad \min \frac{1}{n}\sum_i L\big(x_i,\ g_\phi(f_\theta(x_i))\big).
-\]
+```
 
-Mean squared error for real-valued signals. Binary cross-entropy, with a sigmoid output, when inputs lie in \([0, 1]\), such as pixel intensities. Tied weights \(W' = W^\top\) are optional: half the parameters, and a regulariser.
+
+Mean squared error for real-valued signals. Binary cross-entropy, with a sigmoid output, when inputs lie in $`[0, 1]`$, such as pixel intensities. Tied weights $`W' = W^\top`$ are optional: half the parameters, and a regulariser.
 
 Three properties from the lecture:
 
@@ -548,48 +593,52 @@ Three properties from the lecture:
 - **Lossy.** Detail is dropped in the narrow code. This is not a general-purpose replacement for JPEG.
 - **Learned.** JPEG and MP3 use a fixed rule for every image or song. The autoencoder learns a rule for one kind of data.
 
-**Undercomplete:** code dimension \(k < d\). The bottleneck itself forces the net to keep the informative directions. **Overcomplete:** \(k \ge d\). Copying \(x\) is then a perfect solution, so you must add sparsity, noise, or a contraction penalty.
+**Undercomplete:** code dimension $`k < d`$. The bottleneck itself forces the net to keep the informative directions. **Overcomplete:** $`k \ge d`$. Copying $`x`$ is then a perfect solution, so you must add sparsity, noise, or a contraction penalty.
 
-A **linear** autoencoder with squared error spans the same subspace as PCA. Nonlinear layers can follow a curved manifold. Hinton and Salakhutdinov (2006) compressed digits and faces to 30 numbers and beat PCA at the same code size. The layer sizes in class, \(784 \to 1000 \to 500 \to 250 \to 30\) and back, are that experiment.
+A **linear** autoencoder with squared error spans the same subspace as PCA. Nonlinear layers can follow a curved manifold. Hinton and Salakhutdinov (2006) compressed digits and faces to 30 numbers and beat PCA at the same code size. The layer sizes in class, $`784 \to 1000 \to 500 \to 250 \to 30`$ and back, are that experiment.
 
-![Unsupervised models](figures/unsupervised-models.svg)
+![Unsupervised models](figures/unsupervised-models.png)
 
 ## C2. The types, each with the constraint that stops copying
 
-**Vanilla.** One hidden layer is the code. Linear version \(\approx\) PCA. A starting point, not a rich model.
+**Vanilla.** One hidden layer is the code. Linear version $`\approx`$ PCA. A starting point, not a rich model.
 
 **Multilayer / deep.** Several hidden layers on each side of the code. Features get more abstract: edges, then parts, then objects.
 
 **Stacked, trained greedily.** This is the bridge to deep belief networks, so learn the procedure exactly.
 
-1. Train an autoencoder on \(x\). Keep the encoder. Discard its decoder.
-2. Train a second autoencoder on the codes \(h_1\). Keep that encoder.
+1. Train an autoencoder on $`x`$. Keep the encoder. Discard its decoder.
+2. Train a second autoencoder on the codes $`h_1`$. Keep that encoder.
 3. Stack the encoders. Add a softmax if you need classes.
 4. Fine-tune the whole net by backpropagation. Only step 4 needs labels.
 
 It was invented because a deep net from random weights vanished or fell into a poor minimum. Each layer starts from a sensible representation. With ReLU, batch normalisation, and careful initialisation, end-to-end training usually works now, so greedy pretraining is used mainly when **labels are scarce**.
 
-**Denoising.** Corrupt \(x\) into \(\tilde{x}\) (Gaussian noise, random masking, or salt-and-pepper). The loss still compares the output with the **clean** \(x\). Copying the input no longer scores zero, so the net has to learn the structure that removes the noise. Noise is a training-time device. At test time you feed the real noisy recording (an old photo, a noisy MRI, an ECG with muscle noise) and read the reconstruction. The masking idea is an ancestor of BERT’s mask and of masked autoencoders.
+**Denoising.** Corrupt $`x`$ into $`\tilde{x}`$ (Gaussian noise, random masking, or salt-and-pepper). The loss still compares the output with the **clean** $`x`$. Copying the input no longer scores zero, so the net has to learn the structure that removes the noise. Noise is a training-time device. At test time you feed the real noisy recording (an old photo, a noisy MRI, an ECG with muscle noise) and read the reconstruction. The masking idea is an ancestor of BERT’s mask and of masked autoencoders.
 
-**Convolutional.** A dense autoencoder flattens a \(28 \times 28\) image and forgets that neighbouring pixels belong together. Convolutions and pooling shrink the map and add channels. A transposed convolution, or plain upsampling, grows it back. Train on defect-free circuit boards and a scratch shows up as a patch of high reconstruction error. U-Net-style segmentation grows from this idea.
+**Convolutional.** A dense autoencoder flattens a $`28 \times 28`$ image and forgets that neighbouring pixels belong together. Convolutions and pooling shrink the map and add channels. A transposed convolution, or plain upsampling, grows it back. Train on defect-free circuit boards and a scratch shows up as a patch of high reconstruction error. U-Net-style segmentation grows from this idea.
 
 **Sparse.** The hidden layer may be **wider** than the input. A penalty keeps most units near zero:
 
-\[
-L = \|x - \hat{x}\|^2 + \beta \sum_j \mathrm{KL}(\rho \,\|\, \hat{\rho}_j),
-\]
 
-with a small target such as \(\rho = 0.05\). An L1 penalty on the hidden activations is the simpler version. The penalty is on **activations**, not on weights. Raise \(\beta\) and the code gets sparser while reconstruction gets worse. Each unit behaves like a detector for one pattern.
+```math
+L = \|x - \hat{x}\|^2 + \beta \sum_j \mathrm{KL}(\rho \,\|\, \hat{\rho}_j),
+```
+
+
+with a small target such as $`\rho = 0.05`$. An L1 penalty on the hidden activations is the simpler version. The penalty is on **activations**, not on weights. Raise $`\beta`$ and the code gets sparser while reconstruction gets worse. Each unit behaves like a detector for one pattern.
 
 **Contractive.** Penalise the encoder Jacobian,
 
-\[
+
+```math
 L = \|x - \hat{x}\|^2 + \lambda \| \partial h / \partial x \|_F^2.
-\]
+```
 
-A tiny change in \(x\) should make a tiny change in the code, except along the directions where real data actually varies. Denoising gets that robustness from noise. The contractive model writes the derivative into the loss. The Jacobian is expensive in a deep encoder, which is one reason denoising autoencoders became the more common of the two.
 
-**Sequence.** An LSTM (or GRU) encoder reads \(x_1, \ldots, x_T\). The code is the **final hidden state**. An LSTM decoder unrolls that one vector for \(T\) steps. Use it for ECG beats, machine sensors, or a series whose length varies. Dense and convolutional autoencoders want a fixed grid.
+A tiny change in $`x`$ should make a tiny change in the code, except along the directions where real data actually varies. Denoising gets that robustness from noise. The contractive model writes the derivative into the loss. The Jacobian is expensive in a deep encoder, which is one reason denoising autoencoders became the more common of the two.
+
+**Sequence.** An LSTM (or GRU) encoder reads $`x_1, \ldots, x_T`$. The code is the **final hidden state**. An LSTM decoder unrolls that one vector for $`T`$ steps. Use it for ECG beats, machine sensors, or a series whose length varies. Dense and convolutional autoencoders want a fixed grid.
 
 **Which type for which job — memorise this matching.**
 
@@ -610,16 +659,16 @@ A tiny change in \(x\) should make a tiny change in the code, except along the d
 
 A plain autoencoder stores codes as scattered points. Decode a random point in a gap and you get noise. A VAE (Kingma and Welling, 2013) makes the code a distribution.
 
-1. The encoder outputs \(\mu\) and \(\sigma\), and \(q(z \mid x) = \mathcal{N}(\mu, \sigma^2)\). In code one usually outputs \(\log \sigma^2\) for stability. The lecture writes \(\sigma\).
-2. **Reparameterise** \(z = \mu + \sigma \odot \varepsilon\) with \(\varepsilon \sim \mathcal{N}(0, I)\). The random draw is outside the network, so the gradient still reaches \(\mu\) and \(\sigma\). Sampling \(z\) directly inside the graph would block backpropagation.
-3. The loss is the negative ELBO: a reconstruction term, plus \(\mathrm{KL}\big(q(z\mid x)\,\|\,\mathcal{N}(0, I)\big)\). The KL packs every code cloud onto the standard normal, so the latent space is filled rather than gappy.
-4. To generate, throw the encoder away, sample \(z\) from \(\mathcal{N}(0, I)\), and decode.
+1. The encoder outputs $`\mu`$ and $`\sigma`$, and $`q(z \mid x) = \mathcal{N}(\mu, \sigma^2)`$. In code one usually outputs $`\log \sigma^2`$ for stability. The lecture writes $`\sigma`$.
+2. **Reparameterise** $`z = \mu + \sigma \odot \varepsilon`$ with $`\varepsilon \sim \mathcal{N}(0, I)`$. The random draw is outside the network, so the gradient still reaches $`\mu`$ and $`\sigma`$. Sampling $`z`$ directly inside the graph would block backpropagation.
+3. The loss is the negative ELBO: a reconstruction term, plus $`\mathrm{KL}\big(q(z\mid x)\,\|\,\mathcal{N}(0, I)\big)`$. The KL packs every code cloud onto the standard normal, so the latent space is filled rather than gappy.
+4. To generate, throw the encoder away, sample $`z`$ from $`\mathcal{N}(0, I)`$, and decode.
 
 Samples are often blurrier than GAN or diffusion samples, because the reconstruction-plus-KL objective averages. They are much easier to interpolate: a point halfway between two codes decodes to something sensible. The lecture’s uses are new faces or digits, extra samples for a rare medical class, searching a latent space of molecules, and anomaly detection by low likelihood.
 
 ## C4. Restricted Boltzmann machines and greedy learning
 
-An **RBM** is an undirected graphical model with two layers, visible \(v\) and hidden \(h\). There are no connections inside \(v\) and none inside \(h\). “Restricted” means exactly that. Given one layer, the units of the other layer are independent, which makes training possible. It is an energy-based model: low energy for likely \((v, h)\) pairs. The usual training approximation is **contrastive divergence**, a short Gibbs chain, not backpropagation through a decoder.
+An **RBM** is an undirected graphical model with two layers, visible $`v`$ and hidden $`h`$. There are no connections inside $`v`$ and none inside $`h`$. “Restricted” means exactly that. Given one layer, the units of the other layer are independent, which makes training possible. It is an energy-based model: low energy for likely $`(v, h)`$ pairs. The usual training approximation is **contrastive divergence**, a short Gibbs chain, not backpropagation through a decoder.
 
 **Greedy layer-wise learning**, shared by stacked autoencoders and deep belief nets:
 
@@ -665,26 +714,28 @@ Do not write “the DBN is the microphone” or “the DBN translates the senten
 
 ## C7. Generative adversarial networks
 
-Goodfellow et al., 2014. Two networks play a game. There is no paired reconstruction \(\|x - \hat{x}\|^2\).
+Goodfellow et al., 2014. Two networks play a game. There is no paired reconstruction $`\|x - \hat{x}\|^2`$.
 
-- The **generator** \(G\) maps noise \(z\), usually from a simple Gaussian, to a fake sample \(G(z)\).
-- The **discriminator** \(D\) sees real \(x\) and fake \(G(z)\) and says which is which.
+- The **generator** $`G`$ maps noise $`z`$, usually from a simple Gaussian, to a fake sample $`G(z)`$.
+- The **discriminator** $`D`$ sees real $`x`$ and fake $`G(z)`$ and says which is which.
 
 The value function
 
-\[
+
+```math
 V(D, G) = \mathbb{E}_{x}[\log D(x)] + \mathbb{E}_{z}[\log(1 - D(G(z)))]
-\]
+```
 
-is **maximised by \(D\)** and **minimised by \(G\)**. \(D\) wants to be right. \(G\) wants \(D(G(z))\) to look real. At a successful equilibrium, \(D\) outputs about \(1/2\) on both sources, because \(G\) has matched the data distribution and \(D\) cannot tell them apart.
 
-**Mode collapse** is the usual failure. \(G\) emits only a few kinds of sample. \(D\) is still fooled on those few, so the generator never covers the rest of the data.
+is **maximised by $`D`$** and **minimised by $`G`$**. $`D`$ wants to be right. $`G`$ wants $`D(G(z))`$ to look real. At a successful equilibrium, $`D`$ outputs about $`1/2`$ on both sources, because $`G`$ has matched the data distribution and $`D`$ cannot tell them apart.
+
+**Mode collapse** is the usual failure. $`G`$ emits only a few kinds of sample. $`D`$ is still fooled on those few, so the generator never covers the rest of the data.
 
 | | Autoencoder | VAE | GAN |
 |---|---|---|---|
-| Training signal | rebuild this \(x\) | rebuild \(x\), plus KL to a prior | fool \(D\) |
-| Latent geometry | scattered points, gaps | packed around \(N(0, I)\) | no requirement to encode a given \(x\) |
-| New samples | decoding a random \(z\) is usually noise | sample the prior and decode; often blurry | often sharp; training is less stable |
+| Training signal | rebuild this x | rebuild x, plus KL to a prior | fool D |
+| Latent geometry | scattered points, gaps | packed around N(0, I) | no requirement to encode a given x |
+| New samples | decoding a random z is usually noise | sample the prior and decode; often blurry | often sharp; training is less stable |
 | Labels | none | none | none, until you add a class head |
 
 ## C8. Semi-supervised learning
@@ -707,22 +758,22 @@ A GAN becomes semi-supervised when the discriminator grows a class head: on a la
 Use these when the question is worth 10 marks. Each one is about a page of handwriting if you also draw the figure.
 
 **1. CNN architecture, convolution, and pooling.**
-Define a CNN in two sentences (shared filter, grid). Draw image → conv → ReLU → pool → conv → pool → dense → softmax. Compute the \(3 \times 3\) by \(2 \times 2\) convolution from section A2, or the max-pool from A3. State the size formula and do \(n=5, f=3, s=1, p=0\). Name stride, padding, and RGB summation as variants. One line on dropout.
+Define a CNN in two sentences (shared filter, grid). Draw image → conv → ReLU → pool → conv → pool → dense → softmax. Compute the $`3 \times 3`$ by $`2 \times 2`$ convolution from section A2, or the max-pool from A3. State the size formula and do $`n=5, f=3, s=1, p=0`$. Name stride, padding, and RGB summation as variants. One line on dropout.
 
 **2. LeNet, AlexNet, VGG, Inception, ResNet.**
-One sentence each from the table in A5. Then the VGG arithmetic \(18\) versus \(25\), and \(y = F(x) + x\) with identity versus projection. Mention LRN only under AlexNet, batch norm under Inception and ResNet.
+One sentence each from the table in A5. Then the VGG arithmetic $`18`$ versus $`25`$, and $`y = F(x) + x`$ with identity versus projection. Mention LRN only under AlexNet, batch norm under Inception and ResNet.
 
 **3. Transfer learning and a recognition task.**
 Four steps from A7. Freeze rule. Then say the head is a softmax, and name two applications from A6 (OCR and medical images are the ones on the slide).
 
 **4. RNN, vanishing gradient, BPTT.**
-Temporal example “dog bites man”. Equation for \(h_t\). Unroll, and the sum-over-copies definition. Which weights need through-time backpropagation. The product-of-slopes argument and the Ravi sentence. The scalar three-step example if you have time.
+Temporal example “dog bites man”. Equation for $`h_t`$. Unroll, and the sum-over-copies definition. Which weights need through-time backpropagation. The product-of-slopes argument and the Ravi sentence. The scalar three-step example if you have time.
 
 **5. LSTM, with a numerical step.**
-Whiteboard versus notebook. Four equations. The numbers that give \(C_t = 1.02\). What \(f = 0\) does. Link the cell path to ResNet’s skip. Mention BiLSTM in two sentences if the question says “variants”.
+Whiteboard versus notebook. Four equations. The numbers that give $`C_t = 1.02`$. What $`f = 0`$ does. Link the cell path to ResNet’s skip. Mention BiLSTM in two sentences if the question says “variants”.
 
 **6. GRU versus LSTM.**
-The four lecture equations. The mixer sentence. The numbers that give \(h_t = 0.759\). The comparison table. The PyTorch warning only if you have already written the lecture equation, so you do not confuse yourself.
+The four lecture equations. The mixer sentence. The numbers that give $`h_t = 0.759`$. The comparison table. The PyTorch warning only if you have already written the lecture equation, so you do not confuse yourself.
 
 **7. Encoder–decoder, attention, Transformer.**
 Bottleneck of one vector. Then the scaled-dot-product formula. Draw both towers and mark the three attentions. Positions added, not concatenated. Encoder once, decoder per word. Teacher forcing versus greedy decoding.
@@ -734,13 +785,13 @@ Encoder-only, both directions, compared with GPT and ELMo. Input sum of three em
 Many-to-one. Embedding, LSTM or GRU, sigmoid, binary cross-entropy. Contrast with POS tagging in three lines.
 
 **10. Autoencoders.**
-Hourglass. Undercomplete versus overcomplete. Linear case and PCA. Then four types only, chosen to match the question: denoising (loss against clean \(x\)), sparse (penalty on activations), convolutional (neighbourhood kept), VAE (reparameterisation and KL). Anomaly recipe at the end.
+Hourglass. Undercomplete versus overcomplete. Linear case and PCA. Then four types only, chosen to match the question: denoising (loss against clean $`x`$), sparse (penalty on activations), convolutional (neighbourhood kept), VAE (reparameterisation and KL). Anomaly recipe at the end.
 
 **11. DBN, DBM, greedy learning, speech.**
 Define an RBM in two sentences. Number the four greedy steps. Draw DBN and DBM and say which links are undirected. Speech: unlabeled frames, fine-tune to phonetic states, replace the GMM, keep the HMM.
 
 **12. GAN, and semi-supervised learning.**
-Draw \(z \to G \to\) fake, and real \(x\), both into \(D\). Write \(V(D,G)\) and say who maximises it. Equilibrium and mode collapse. Then the four-way distinction supervised / unsupervised / self-supervised / semi-supervised, with the stacked DBN as the semi-supervised pipeline.
+Draw $`z \to G \to`$ fake, and real $`x`$, both into $`D`$. Write $`V(D,G)`$ and say who maximises it. Equilibrium and mode collapse. Then the four-way distinction supervised / unsupervised / self-supervised / semi-supervised, with the stacked DBN as the semi-supervised pipeline.
 
 ---
 
@@ -749,16 +800,16 @@ Draw \(z \to G \to\) fake, and real \(x\), both into \(D\). Write \(V(D,G)\) and
 Say these aloud the evening before the paper. If you can say the sentence, you can recognise the MCQ option and you can start the long answer.
 
 - A CNN shares a filter across **space**. An RNN shares a matrix across **time**.
-- Output size is \((n + 2P - f)/S + 1\). One RGB filter makes one feature map.
-- LeNet: tanh, average pool, 60 thousand, digits. AlexNet: ReLU, max pool, dropout, LRN, 60 million, 1000 classes. VGG: stacks of \(3 \times 3\). Inception: several sizes at once. ResNet: \(y = F(x) + x\).
+- Output size is $`(n + 2P - f)/S + 1`$. One RGB filter makes one feature map.
+- LeNet: tanh, average pool, 60 thousand, digits. AlexNet: ReLU, max pool, dropout, LRN, 60 million, 1000 classes. VGG: stacks of $`3 \times 3`$. Inception: several sizes at once. ResNet: $`y = F(x) + x`$.
 - Transfer learning freezes early filters when the new dataset is small.
-- BPTT sums the copies of a shared weight. \(W_{hh}\) carries error backward. \(W_{hy}\) does not.
-- LSTM: \(C_t = f C_{t-1} + i \tilde{C}\), and \(h = o \tanh(C)\). Forget near 1 remembers.
-- GRU lecture form: \(h = (1-z)\,h_{\text{old}} + z\,\tilde{h}\). \(z = 0\) copies memory. \(r = 0\) ignores the past inside the candidate.
+- BPTT sums the copies of a shared weight. $`W_{hh}`$ carries error backward. $`W_{hy}`$ does not.
+- LSTM: $`C_t = f C_{t-1} + i \tilde{C}`$, and $`h = o \tanh(C)`$. Forget near 1 remembers.
+- GRU lecture form: $`h = (1-z)\,h_{\text{old}} + z\,\tilde{h}`$. $`z = 0`$ copies memory. $`r = 0`$ ignores the past inside the candidate.
 - A bidirectional net needs the future to be already recorded. A recursive net composes a tree.
-- The plain encoder–decoder owns one vector. The Transformer owns one vector per input token, in \(M\).
-- Attention weights are a softmax of scaled scores. The decoder mask is \(-\infty\) on the future.
+- The plain encoder–decoder owns one vector. The Transformer owns one vector per input token, in $`M`$.
+- Attention weights are a softmax of scaled scores. The decoder mask is $`-\infty`$ on the future.
 - BERT masks 15%, then 80 / 10 / 10. `[CLS]` does sentences. QA points at a start and an end. BERT does not write the answer.
-- An autoencoder rebuilds \(x\). A narrow code, or noise, or a penalty, or it will copy. A VAE can sample \(z\) from a prior. A GAN does not rebuild a paired \(x\).
+- An autoencoder rebuilds $`x`$. A narrow code, or noise, or a penalty, or it will copy. A VAE can sample $`z`$ from a prior. A GAN does not rebuild a paired $`x`$.
 - A DBN is undirected only at the top. A DBM is undirected all the way up.
 - Semi-supervised means a few labels plus many unlabeled inputs. Pretrain, then fine-tune.

@@ -1,70 +1,65 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="720" viewBox="0 0 980 720">
   <rect width="980" height="720" fill="#ffffff"/>
-  <text x="24" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Autoencoder, VAE, GAN, DBN and DBM</text>
-
-  <text x="24" y="60" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">Autoencoder  rebuild x through a short code</text>
+  <text x="24" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Autoencoder, VAE, GAN, DBN and DBM</text>
+  <text x="24" y="60" font-family="Arial, sans-serif" font-size="14" font-weight="700">Autoencoder: rebuild x through a short code</text>
   <rect x="24" y="76" width="70" height="36" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="48" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="14">x</text>
+  <text x="48" y="99" font-family="Arial, sans-serif" font-size="14">x</text>
   <rect x="114" y="76" width="90" height="36" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="128" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="13">encoder</text>
+  <text x="128" y="99" font-family="Arial, sans-serif" font-size="13">encoder</text>
   <rect x="224" y="80" width="50" height="28" rx="6" fill="#bbf7d0" stroke="#15803d"/>
-  <text x="240" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="14">z</text>
+  <text x="240" y="99" font-family="Arial, sans-serif" font-size="14">z</text>
   <rect x="294" y="76" width="90" height="36" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="310" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="13">decoder</text>
+  <text x="310" y="99" font-family="Arial, sans-serif" font-size="13">decoder</text>
   <rect x="404" y="76" width="70" height="36" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="422" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="14">x</text>
-  <text x="24" y="136" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Loss compares x with x. Undercomplete: k &lt; d. Overcomplete copies x unless you add noise, sparsity, or a Jacobian penalty.</text>
-
-  <text x="24" y="176" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">VAE  code is a distribution, so a new z can be decoded</text>
-  <text x="24" y="200" font-family="Segoe UI, Arial, sans-serif" font-size="13">encoder ù ù, ù     z = ù + ù ù ù,  ù ~ N(0,I)     decoder ù x</text>
-  <text x="24" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="13">Loss = reconstruction + KL( q(z|x)  N(0,I) ). Generation: sample z from the prior, drop the encoder.</text>
-
-  <text x="24" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">GAN  no reconstruction pair. Two networks, one game.</text>
+  <text x="422" y="99" font-family="Arial, sans-serif" font-size="14">x-hat</text>
+  <text x="24" y="136" font-family="Arial, sans-serif" font-size="13" fill="#334155">Loss compares x-hat with x. Undercomplete means k &lt; d. Overcomplete copies x unless you add noise, sparsity, or a Jacobian penalty.</text>
+  <text x="24" y="176" font-family="Arial, sans-serif" font-size="14" font-weight="700">VAE: the code is a distribution, so a new z can be decoded</text>
+  <text x="24" y="200" font-family="Arial, sans-serif" font-size="13">encoder to mu, sigma.    z = mu + sigma * epsilon, epsilon ~ N(0, I).    decoder to x-hat.</text>
+  <text x="24" y="222" font-family="Arial, sans-serif" font-size="13">Loss = reconstruction + KL( q(z|x) || N(0,I) ). Generation: sample z from the prior and drop the encoder.</text>
+  <text x="24" y="262" font-family="Arial, sans-serif" font-size="14" font-weight="700">GAN: no reconstruction pair. Two networks, one game.</text>
   <rect x="24" y="280" width="50" height="32" rx="6" fill="#e2e8f0" stroke="#1e3a5f"/>
-  <text x="40" y="301" font-family="Segoe UI, Arial, sans-serif" font-size="14">z</text>
+  <text x="40" y="301" font-family="Arial, sans-serif" font-size="14">z</text>
   <rect x="94" y="280" width="110" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="112" y="301" font-family="Segoe UI, Arial, sans-serif" font-size="13">Generator</text>
+  <text x="112" y="301" font-family="Arial, sans-serif" font-size="13">Generator</text>
   <rect x="224" y="280" width="80" height="32" rx="6" fill="#fecaca" stroke="#1e3a5f"/>
-  <text x="246" y="301" font-family="Segoe UI, Arial, sans-serif" font-size="13">fake</text>
+  <text x="246" y="301" font-family="Arial, sans-serif" font-size="13">fake</text>
   <rect x="360" y="260" width="130" height="28" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="378" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="13">real x</text>
+  <text x="392" y="279" font-family="Arial, sans-serif" font-size="13">real x</text>
   <rect x="360" y="300" width="130" height="36" rx="6" fill="#fde68a" stroke="#1e3a5f"/>
-  <text x="378" y="323" font-family="Segoe UI, Arial, sans-serif" font-size="13">Discriminator</text>
-  <text x="510" y="313" font-family="Segoe UI, Arial, sans-serif" font-size="13">real or fake</text>
-  <text x="24" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">D maximises E log D(x) + E log(1D(G(z))). G minimises it. Success: D H 1/2. Failure: mode collapse.</text>
-
-  <text x="24" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">DBN (left) vs DBM (right)</text>
-  <text x="24" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#64748b">DBN: top pair undirected, lower arrows point down for generation</text>
-  <rect x="80" y="444" width="100" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
-  <text x="100" y="463" font-family="Segoe UI, Arial, sans-serif" font-size="12">h3  RBM top</text>
-  <rect x="80" y="488" width="100" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
-  <text x="108" y="507" font-family="Segoe UI, Arial, sans-serif" font-size="12">h2</text>
-  <line x1="130" y1="472" x2="130" y2="488" stroke="#1e3a5f" stroke-width="2"/>
-  <text x="136" y="484" font-family="Segoe UI, Arial, sans-serif" font-size="11">undirected</text>
-  <rect x="80" y="540" width="100" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="108" y="559" font-family="Segoe UI, Arial, sans-serif" font-size="12">h1</text>
-  <line x1="130" y1="516" x2="130" y2="540" stroke="#1e3a5f" stroke-width="2"/>
-  <rect x="80" y="592" width="100" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="112" y="611" font-family="Segoe UI, Arial, sans-serif" font-size="12">v</text>
-  <line x1="130" y1="568" x2="130" y2="592" stroke="#1e3a5f" stroke-width="2"/>
-  <text x="24" y="650" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#334155">Train RBM 1 on v, then RBM 2 on h1, then RBM 3. Then fine-tune with labels.</text>
-  <text x="24" y="670" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#334155">Speech: pretrain on frames, fine-tune to phonetic states, replace the GMM in the HMM.</text>
-
-  <text x="520" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#64748b">DBM: every adjacent pair is undirected</text>
+  <text x="378" y="323" font-family="Arial, sans-serif" font-size="13">Discriminator</text>
+  <text x="510" y="313" font-family="Arial, sans-serif" font-size="13">real or fake</text>
+  <text x="24" y="360" font-family="Arial, sans-serif" font-size="13" fill="#334155">D maximises E log D(x) + E log(1 - D(G(z))). G minimises it. Success: D is about 1/2. Failure: mode collapse.</text>
+  <text x="24" y="404" font-family="Arial, sans-serif" font-size="14" font-weight="700">DBN (left) versus DBM (right)</text>
+  <text x="24" y="428" font-family="Arial, sans-serif" font-size="12" fill="#64748b">DBN: top pair undirected. Lower arrows point down when generating.</text>
+  <rect x="80" y="444" width="120" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
+  <text x="96" y="463" font-family="Arial, sans-serif" font-size="12">h3  RBM top</text>
+  <rect x="80" y="488" width="120" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
+  <text x="124" y="507" font-family="Arial, sans-serif" font-size="12">h2</text>
+  <line x1="140" y1="472" x2="140" y2="488" stroke="#1e3a5f" stroke-width="2"/>
+  <text x="148" y="484" font-family="Arial, sans-serif" font-size="11">undirected</text>
+  <rect x="80" y="540" width="120" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="124" y="559" font-family="Arial, sans-serif" font-size="12">h1</text>
+  <line x1="140" y1="516" x2="140" y2="540" stroke="#1e3a5f" stroke-width="2"/>
+  <rect x="80" y="592" width="120" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="128" y="611" font-family="Arial, sans-serif" font-size="12">v</text>
+  <line x1="140" y1="568" x2="140" y2="592" stroke="#1e3a5f" stroke-width="2"/>
+  <text x="24" y="650" font-family="Arial, sans-serif" font-size="12" fill="#334155">Train RBM 1 on v, then RBM 2 on h1, then RBM 3. Then fine-tune with labels.</text>
+  <text x="24" y="670" font-family="Arial, sans-serif" font-size="12" fill="#334155">Speech: pretrain on frames, fine-tune to phonetic states, replace the GMM in the HMM.</text>
+  <text x="520" y="428" font-family="Arial, sans-serif" font-size="12" fill="#64748b">DBM: every adjacent pair is undirected</text>
   <rect x="560" y="444" width="100" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
-  <text x="596" y="463" font-family="Segoe UI, Arial, sans-serif" font-size="12">h3</text>
+  <text x="596" y="463" font-family="Arial, sans-serif" font-size="12">h3</text>
   <rect x="560" y="500" width="100" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
-  <text x="596" y="519" font-family="Segoe UI, Arial, sans-serif" font-size="12">h2</text>
+  <text x="596" y="519" font-family="Arial, sans-serif" font-size="12">h2</text>
   <rect x="560" y="556" width="100" height="28" rx="4" fill="#fde68a" stroke="#1e3a5f"/>
-  <text x="596" y="575" font-family="Segoe UI, Arial, sans-serif" font-size="12">h1</text>
+  <text x="596" y="575" font-family="Arial, sans-serif" font-size="12">h1</text>
   <rect x="560" y="612" width="100" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="600" y="631" font-family="Segoe UI, Arial, sans-serif" font-size="12">v</text>
+  <text x="600" y="631" font-family="Arial, sans-serif" font-size="12">v</text>
   <line x1="610" y1="472" x2="610" y2="500" stroke="#1e3a5f" stroke-width="2"/>
   <line x1="610" y1="528" x2="610" y2="556" stroke="#1e3a5f" stroke-width="2"/>
   <line x1="610" y1="584" x2="610" y2="612" stroke="#1e3a5f" stroke-width="2"/>
-  <text x="680" y="520" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Both directions</text>
-  <text x="680" y="540" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">act together.</text>
-  <text x="680" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Inference is</text>
-  <text x="680" y="580" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">approximate.</text>
-  <text x="24" y="704" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#64748b">RBM: undirected, bipartite, no links inside v and no links inside h. That restriction is what restricted means.</text>
+  <text x="680" y="520" font-family="Arial, sans-serif" font-size="13" fill="#334155">Both directions</text>
+  <text x="680" y="540" font-family="Arial, sans-serif" font-size="13" fill="#334155">act together.</text>
+  <text x="680" y="560" font-family="Arial, sans-serif" font-size="13" fill="#334155">Inference is</text>
+  <text x="680" y="580" font-family="Arial, sans-serif" font-size="13" fill="#334155">approximate.</text>
+  <text x="24" y="704" font-family="Arial, sans-serif" font-size="12" fill="#64748b">RBM: undirected and bipartite. No links inside v and no links inside h. That restriction is what restricted means.</text>
 </svg>

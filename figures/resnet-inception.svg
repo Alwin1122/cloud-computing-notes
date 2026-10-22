@@ -1,41 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
   <rect width="920" height="420" fill="#ffffff"/>
-  <text x="24" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">ResNet block and Inception module  draw one of these when asked</text>
-  <text x="24" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Residual block</text>
+  <text x="24" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">ResNet block and Inception module</text>
+  <text x="24" y="62" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Residual block</text>
   <rect x="40" y="110" width="70" height="36" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="58" y="133" font-family="Segoe UI, Arial, sans-serif" font-size="14">x</text>
+  <text x="58" y="133" font-family="Arial, sans-serif" font-size="14">x</text>
   <line x1="110" y1="128" x2="150" y2="128" stroke="#1e3a5f" stroke-width="2"/>
   <rect x="150" y="88" width="120" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="168" y="109" font-family="Segoe UI, Arial, sans-serif" font-size="13">Conv 3×3</text>
-  <line x1="210" y1="88" x2="210" y2="70" stroke="#1e3a5f"/>
+  <text x="168" y="109" font-family="Arial, sans-serif" font-size="13">Conv 3x3</text>
   <rect x="150" y="150" width="120" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="168" y="171" font-family="Segoe UI, Arial, sans-serif" font-size="13">Conv 3×3</text>
+  <text x="168" y="171" font-family="Arial, sans-serif" font-size="13">Conv 3x3</text>
   <line x1="210" y1="120" x2="210" y2="150" stroke="#1e3a5f" stroke-width="2"/>
   <path d="M75 110 C75 60, 360 60, 360 128" fill="none" stroke="#15803d" stroke-width="2.5"/>
-  <text x="150" y="54" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#15803d">identity skip (or 1×1 projection)</text>
+  <text x="140" y="54" font-family="Arial, sans-serif" font-size="13" fill="#15803d">identity skip, or 1x1 projection</text>
   <rect x="330" y="110" width="70" height="36" rx="6" fill="#bbf7d0" stroke="#1e3a5f"/>
-  <text x="348" y="133" font-family="Segoe UI, Arial, sans-serif" font-size="14">+</text>
+  <text x="348" y="133" font-family="Arial, sans-serif" font-size="14">+</text>
   <line x1="270" y1="166" x2="365" y2="146" stroke="#1e3a5f" stroke-width="2"/>
-  <text x="410" y="133" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">y = F(x) + x</text>
-  <text x="24" y="220" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">F is the stacked convolutions. The skip lets the gradient pass through depth.</text>
-  <text x="24" y="240" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Identity if shapes match. Projection (1×1) if channels or size change.</text>
+  <text x="410" y="133" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">y = F(x) + x</text>
+  <text x="24" y="220" font-family="Arial, sans-serif" font-size="13" fill="#334155">F is the stacked convolutions. The skip lets the gradient pass through depth.</text>
+  <text x="24" y="240" font-family="Arial, sans-serif" font-size="13" fill="#334155">Identity if shapes match. Projection (1x1) if channels or size change.</text>
   <line x1="460" y1="70" x2="460" y2="400" stroke="#e2e8f0"/>
-  <text x="484" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Inception: several sizes at one level</text>
+  <text x="484" y="62" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a5f">Inception: several sizes at one level</text>
   <rect x="560" y="80" width="160" height="32" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
-  <text x="600" y="101" font-family="Segoe UI, Arial, sans-serif" font-size="13">previous layer</text>
+  <text x="590" y="101" font-family="Arial, sans-serif" font-size="13">previous layer</text>
   <rect x="500" y="150" width="90" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="522" y="171" font-family="Segoe UI, Arial, sans-serif" font-size="13">1×1</text>
+  <text x="528" y="171" font-family="Arial, sans-serif" font-size="13">1x1</text>
   <rect x="600" y="150" width="90" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="622" y="171" font-family="Segoe UI, Arial, sans-serif" font-size="13">3×3</text>
+  <text x="628" y="171" font-family="Arial, sans-serif" font-size="13">3x3</text>
   <rect x="700" y="150" width="90" height="32" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
-  <text x="722" y="171" font-family="Segoe UI, Arial, sans-serif" font-size="13">5×5</text>
+  <text x="728" y="171" font-family="Arial, sans-serif" font-size="13">5x5</text>
   <rect x="800" y="150" width="90" height="32" rx="6" fill="#e2e8f0" stroke="#1e3a5f"/>
-  <text x="812" y="171" font-family="Segoe UI, Arial, sans-serif" font-size="13">pool</text>
+  <text x="828" y="171" font-family="Arial, sans-serif" font-size="13">pool</text>
   <rect x="560" y="230" width="280" height="36" rx="6" fill="#bbf7d0" stroke="#1e3a5f"/>
-  <text x="640" y="253" font-family="Segoe UI, Arial, sans-serif" font-size="14">concatenate</text>
-  <text x="484" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">1×1 sees one pixel (local, and it can change depth).</text>
-  <text x="484" y="320" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">5×5 sees a wider pattern. Branches run in parallel, not in a deeper stack only.</text>
-  <text x="484" y="348" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Class also names batch normalisation and RMSprop for this network.</text>
-  <text x="484" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">VGG idea, for comparison: two 3×3 in series see as far as one 5×5,</text>
-  <text x="484" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">with 18 weights instead of 25 per input channel, and two ReLUs.</text>
+  <text x="650" y="253" font-family="Arial, sans-serif" font-size="14">concatenate</text>
+  <text x="484" y="300" font-family="Arial, sans-serif" font-size="13" fill="#334155">1x1 sees one pixel and can change the depth.</text>
+  <text x="484" y="320" font-family="Arial, sans-serif" font-size="13" fill="#334155">5x5 sees a wider pattern. Branches run in parallel.</text>
+  <text x="484" y="348" font-family="Arial, sans-serif" font-size="13" fill="#334155">Class also names batch normalisation and RMSprop here.</text>
+  <text x="484" y="380" font-family="Arial, sans-serif" font-size="13" fill="#334155">VGG: two 3x3 layers in series see as far as one 5x5,</text>
+  <text x="484" y="400" font-family="Arial, sans-serif" font-size="13" fill="#334155">with 18 weights instead of 25 per input channel, and two ReLUs.</text>
 </svg>
