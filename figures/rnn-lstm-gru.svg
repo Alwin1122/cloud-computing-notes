@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="780" viewBox="0 0 960 780">
+  <rect width="960" height="780" fill="#ffffff"/>
+  <text x="24" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">RNN, LSTM and GRU  the three cells to draw</text>
+
+  <text x="24" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">Plain RNN, unrolled. One cell, copied. Weights do not change with t.</text>
+  <rect x="40" y="80" width="90" height="50" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="68" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="14">t  1</text>
+  <rect x="190" y="80" width="90" height="50" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="226" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="14">t</text>
+  <rect x="340" y="80" width="90" height="50" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="368" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="14">t + 1</text>
+  <line x1="130" y1="105" x2="190" y2="105" stroke="#15803d" stroke-width="2"/>
+  <line x1="280" y1="105" x2="340" y2="105" stroke="#15803d" stroke-width="2"/>
+  <text x="145" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#15803d">h</text>
+  <text x="300" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#15803d">h</text>
+  <text x="55" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="13">x, y</text>
+  <text x="210" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="13">x, y</text>
+  <text x="355" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="13">x, y</text>
+  <text x="450" y="100" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#0f172a">hœ = tanh(W“• xœ + W•• hœ‹ + b)</text>
+  <text x="450" y="122" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">h is rewritten every step. Long products of small</text>
+  <text x="450" y="140" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">slopes make the early gradient vanish.</text>
+
+  <text x="24" y="200" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">LSTM. Two memories. C is the highway through time.</text>
+  <rect x="70" y="230" width="150" height="28" rx="4" fill="#dcfce7" stroke="#15803d"/>
+  <text x="88" y="249" font-family="Segoe UI, Arial, sans-serif" font-size="13">Cœ‹  cell (long)</text>
+  <text x="230" y="249" font-family="Segoe UI, Arial, sans-serif" font-size="16">× f</text>
+  <text x="290" y="249" font-family="Segoe UI, Arial, sans-serif" font-size="16">+ </text>
+  <text x="320" y="249" font-family="Segoe UI, Arial, sans-serif" font-size="16">× i</text>
+  <rect x="380" y="230" width="120" height="28" rx="4" fill="#dcfce7" stroke="#15803d"/>
+  <text x="410" y="249" font-family="Segoe UI, Arial, sans-serif" font-size="13">Cœ</text>
+  <text x="230" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#c2410c">f = Ã(·)   forget, keep or erase</text>
+  <text x="230" y="302" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#c2410c">i = Ã(·)   input, how much to write</text>
+  <text x="230" y="324" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#1d4ed8">C = tanh(·)   the new note</text>
+  <text x="230" y="346" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#c2410c">o = Ã(·)   output, what to show</text>
+  <text x="520" y="249" font-family="Segoe UI, Arial, sans-serif" font-size="13">tanh(Cœ) × o  ’  hœ</text>
+  <text x="520" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">hœ goes to the next step and to w</text>
+  <text x="24" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">Cœ = fœ ™ Cœ‹ + iœ ™ Cœ          hœ = oœ ™ tanh(Cœ)</text>
+  <text x="24" y="402" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Each gate is an RNN step with its own weights: Ã(Wxœ + Uhœ‹ + b). Four weight sets.</text>
+
+  <text x="24" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">GRU. One memory h. Update gate is the mixer tap. No output gate.</text>
+  <rect x="70" y="480" width="150" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="100" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="13">hœ‹</text>
+  <text x="240" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="15">× (1z)</text>
+  <text x="330" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="16">+</text>
+  <text x="360" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="15">× z</text>
+  <rect x="420" y="480" width="90" height="28" rx="4" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="448" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="13">hœ</text>
+  <text x="540" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">hœ is both memory and output</text>
+  <text x="70" y="550" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#c2410c">z = Ã(·)  update: 0 keeps old, 1 writes new</text>
+  <text x="70" y="572" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#c2410c">r = Ã(·)  reset: filters hœ‹ before the candidate</text>
+  <text x="70" y="594" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#1d4ed8">h = tanh(W xœ + U (r ™ hœ‹) + b)</text>
+  <text x="70" y="630" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">hœ = (1  zœ) ™ hœ‹ + zœ ™ hœ</text>
+  <text x="70" y="658" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">(1z) plays LSTMs forget role. z plays the input role. They sum to 1.</text>
+  <text x="70" y="680" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Three weight sets, not four. If a library swaps z and (1z), the letter flips, the mixer does not.</text>
+  <text x="70" y="720" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Worked GRU step from class: h=0.8, r=0.5, z=0.3 ’ h=tanh(0.8)=0.664 ’ hœ=0.7×0.8+0.3×0.664=0.759</text>
+  <text x="70" y="748" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#334155">Worked LSTM step: C=0.8, f=0.9, i=0.5, C=0.6 ’ Cœ=1.02. If f=0, Cœ=0.30 only.</text>
+</svg>
