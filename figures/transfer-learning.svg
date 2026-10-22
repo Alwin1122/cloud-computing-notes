@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="300" viewBox="0 0 980 300">
+  <rect width="980" height="300" fill="#ffffff"/>
+  <text x="24" y="32" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Transfer learning</text>
+  <text x="24" y="64" font-family="Arial, sans-serif" font-size="14" font-weight="700">Source: ImageNet, 1000 classes, millions of photos</text>
+  <rect x="24" y="80" width="200" height="40" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="48" y="105" font-family="Arial, sans-serif" font-size="13">Early conv: edges</text>
+  <rect x="240" y="80" width="220" height="40" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
+  <text x="270" y="105" font-family="Arial, sans-serif" font-size="13">Later conv: object parts</text>
+  <rect x="480" y="80" width="180" height="40" rx="6" fill="#fecaca" stroke="#1e3a5f"/>
+  <text x="510" y="105" font-family="Arial, sans-serif" font-size="13">1000-way head</text>
+  <text x="680" y="105" font-family="Arial, sans-serif" font-size="13" fill="#b91c1c">discard this head</text>
+  <text x="24" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="700">Target: few labelled images, new classes (for example X-ray findings)</text>
+  <rect x="24" y="176" width="200" height="40" rx="6" fill="#dbeafe" stroke="#15803d"/>
+  <text x="70" y="201" font-family="Arial, sans-serif" font-size="13">freeze</text>
+  <rect x="240" y="176" width="220" height="40" rx="6" fill="#fde68a" stroke="#1e3a5f"/>
+  <text x="270" y="201" font-family="Arial, sans-serif" font-size="13">fine-tune, small step size</text>
+  <rect x="480" y="176" width="220" height="40" rx="6" fill="#bbf7d0" stroke="#15803d"/>
+  <text x="520" y="201" font-family="Arial, sans-serif" font-size="13">new softmax, K classes</text>
+  <text x="24" y="250" font-family="Arial, sans-serif" font-size="13" fill="#334155">Early filters are generic, so they are kept. A large learning rate on every layer, with only a few dozen target images, overwrites them.</text>
+  <text x="24" y="276" font-family="Arial, sans-serif" font-size="13" fill="#334155">If the target set is large and unlike ImageNet, more of the later convolutional layers can be trained.</text>
+</svg>

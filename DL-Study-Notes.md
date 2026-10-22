@@ -1,18 +1,16 @@
-# Deep Learning — study notes for the written paper and the MCQs
+# Deep Learning — theory notes
 
-Read this in order. The three units are the three blocks on the portion list. Every heading from that list is here, and so is the extra material from the class decks (BPTT, the named CNN architectures, the GRU equations, the Transformer walk-through, BERT question answering, and the autoencoder types).
+These notes are for the written paper. Read them in order. Each unit follows the portion list, and each section is written so it can be copied into an answer booklet: definition, figure, equation, example, and a comparison or a limit.
 
-Pair it with `DL-1Mark-CNN-Sequence-Unsupervised.md`. These notes are what you write in a 2-mark, 6-mark, or 10-mark answer. The MCQ file is the same ideas turned into “choose the best option”.
+A theory answer has five parts.
 
-**How a full-mark written answer is built**
+1. Say what the method is for.
+2. Redraw the figure from that section and label it.
+3. Write the equation and say what every symbol means.
+4. Give the worked example from class, with the numbers or the sentence.
+5. Close with one comparison or one limitation.
 
-1. One sentence: what the thing is for.
-2. The picture (redraw the figure named in that section).
-3. The equation, with every symbol in words.
-4. A tiny example with numbers or a sentence.
-5. One limitation, or one comparison, so the answer does not stop at the definition.
-
-Figures live in `figures/`. Redraw them by hand in the answer booklet. The examiner is marking the labels, not the artwork.
+The figures are the ones to redraw. The examiner marks the labels.
 
 ---
 
@@ -24,7 +22,7 @@ Figures live in `figures/`. Redraw them by hand in the answer booklet. The exami
 | Pooling | A3 |
 | Convolution and its variants | A2 |
 | Transfer learning | A7 |
-| CNN for object recognition and computer vision | A6, A8 |
+| CNN for object recognition and computer vision | A6 |
 | RNN | B1–B3 |
 | Bidirectional RNN | B4 |
 | Encoder–decoder | B5 |
@@ -68,9 +66,21 @@ The stack used for recognition is:
 
 Dropout randomly drops units **during training**, often 20% to 50% of them. At test time every unit is used. It is a regulariser, not a feature extractor.
 
-**2 marks.** A CNN uses shared local filters on a grid, so it has fewer parameters than a fully connected net and can detect a pattern anywhere in the image.
+**Short answer.** A CNN uses shared local filters on a grid, so it has fewer parameters than a fully connected net and can detect a pattern anywhere in the image.
 
-**6 marks.** Draw: image → conv + ReLU → pool → conv + ReLU → pool → flatten → fully connected → softmax. Name the job of each block, and say that dropout is applied in training between the last pool and the first dense layer.
+**Long answer.** Draw the pipeline below. Name the job of each block. Say that dropout, on AlexNet, sits between the last pool and the first fully connected layer and is used only while training.
+
+![CNN architecture](figures/cnn-architecture.png)
+
+Count the parameters once, so the “fewer weights” claim is not a slogan. A fully connected unit that sees a $`224 \times 224 \times 3`$ image has $`224 \times 224 \times 3 = 150528`$ weights, before the bias. One $`3 \times 3`$ filter on the same three-channel image has $`3 \times 3 \times 3 = 27`$ weights, reused at every position. Sixty-four such filters are still only $`64 \times 27`$ weights in that layer. The saving is the reuse, not a smaller image.
+
+What each stage is allowed to claim in an answer:
+
+- Convolution extracts a local pattern and writes a feature map.
+- ReLU, $`\max(0, x)`$, is there because a stack of linear maps is still one linear map.
+- Pooling reduces height and width. It does not learn a kernel.
+- The fully connected layers mix every feature into every next unit.
+- Softmax turns the last scores into a distribution over classes. Training uses cross-entropy.
 
 ![CNN convolution](figures/cnn-convolution.png)
 
@@ -121,7 +131,19 @@ Check it. $`n = 5`$, $`f = 3`$, $`S = 1`$, $`P = 0`$ gives $`(5-3)/1 + 1 = 3`$. 
 | Parallel kernel sizes (Inception) | 1 x 1, 3 x 3 and 5 x 5 run at the **same** level and are concatenated. | Width, not only depth. Small kernels see local structure; large kernels see a wider pattern. |
 | Transposed convolution | Learnable upsampling. Used in the decoder of a convolutional autoencoder to grow the map back. | Restores spatial size. It is not the exact mathematical inverse of the encoder’s convolution. |
 
-**MCQ trap.** Weight sharing does **not** mean every filter in the layer is a copy of the first filter. Filters differ. Positions of one filter share weights.
+Weight sharing does not mean every filter in the layer is a copy of the first filter. Filters differ from each other. The positions visited by one filter share that filter’s weights.
+
+![Convolution variants](figures/conv-variants.png)
+
+**Padding, written out.** Suppose the image is $`5 \times 5`$ and the kernel is $`3 \times 3`$, stride 1. With $`P = 0`$ the output is $`3 \times 3`$, and the centre of the kernel never sits on a corner pixel. With $`P = 1`$ the formula gives $`(5 + 2 - 3)/1 + 1 = 5`$. The map stays $`5 \times 5`$, and every original pixel is a centre. The added border is zeros in the class example. This is the “same” convolution. “Valid” means $`P = 0`$.
+
+**Stride, written out.** The same $`5 \times 5`$ image and $`3 \times 3`$ kernel with stride 2 and no padding gives $`(5 - 3)/2 + 1 = 2`$. The kernel jumps. The number of learned weights does not change. Only the number of positions changes.
+
+**Several channels.** A colour image is three maps. One filter is three kernels of the same spatial size. At each position the three responses are added, plus a bias, and that sum is one entry of one feature map. If the layer has 64 filters, the output has 64 maps. Do not say “three filters because the image is RGB”.
+
+**$`1 \times 1`$ convolution.** The window is a single pixel, so neighbours are invisible. Across channels it is a small fully connected mix, and it can change the number of channels. Inception uses it as the local branch and also to thin a thick stack of maps before a $`3 \times 3`$ or $`5 \times 5`$ branch, which is why the naive module (large filters on the full depth) is expensive and the version with $`1 \times 1`$ bottlenecks is the one that is trained.
+
+**Transposed convolution.** The decoder of a convolutional autoencoder has to grow a small code back to the image size. A transposed convolution is a learnable upsampling. It is not the exact inverse of the encoder convolution: it does not recover the identical input, it only restores the spatial size so a reconstruction can be compared with $`x`$.
 
 **2 marks.** State the size formula and compute one example.
 
@@ -193,7 +215,21 @@ If the best mapping is “do nothing”, $`F`$ can be near zero, which is easier
 
 ![ResNet and Inception](figures/resnet-inception.png)
 
-**10-mark skeleton.** Draw LeNet’s pipeline in one line, then the table above in sentences (you will not have a ruled table in the booklet: write “LeNet … whereas AlexNet …”). Spend the last third on VGG’s parameter argument ($`18`$ vs $`25`$) and ResNet’s equation $`y = F(x)+x`$. Name identity versus projection.
+Write the comparison as sentences, not as a hope that the booklet has a ruled table. One paragraph each is enough if the numbers are right.
+
+**LeNet.** Handwritten digits. Input $`32 \times 32`$ grayscale, 10 classes, about 60,000 parameters. Hidden activations are tanh. The last layer is softmax. Pooling is average. The lecture counts a convolution-plus-pool stage as one layer and describes five such stages plus three fully connected layers. This is the small network. Do not give it ReLU, max pooling, or 60 million weights.
+
+**AlexNet.** ImageNet. Input $`227 \times 227 \times 3`$, 1000 classes, about 60 million parameters. Hidden activations are ReLU, because tanh saturates and slows training, and the last layer is softmax. Pooling is max. Dropout sits between the last pool and the first fully connected layer. Local response normalisation is present because ReLU, $`\max(0, x)`$, does not bound large positive values: a strong response suppresses its neighbours. That suppression is not trained. Inter-channel normalisation competes across nearby feature maps at one pixel. Intra-channel normalisation competes across a spatial patch of one map.
+
+**ZFNet.** The lecture treats it as AlexNet with the hyperparameters adjusted: smaller filters and a gentler first stride, so more of the image survives the first layer. It is not a residual network.
+
+**VGG.** Input $`224 \times 224 \times 3`$, about 138 million parameters, 13 convolutions, 5 max-pools, 3 fully connected layers. Every convolution the lecture cares about is $`3 \times 3`$. Two of them, stride 1, see as far as one $`5 \times 5`$: the second layer’s centre looks at a $`3 \times 3`$ that itself summarises a $`3 \times 3`$, which reaches two pixels further on every side. Weights per input channel per output channel: $`9 + 9 = 18`$ against $`25`$, and there are two ReLUs instead of one. Three $`3 \times 3`$ layers match one $`7 \times 7`$. VGG-19 is one of the versions. The parameter count is large because the fully connected tail and the number of channels are large. The saving is relative to using the big kernels, not relative to AlexNet.
+
+**Inception (GoogLeNet).** A layer is made wider instead of only deeper. At one level, $`1 \times 1`$, $`3 \times 3`$, $`5 \times 5`$, and a pooling branch run in parallel and are concatenated. The small kernel sees a local pattern. The large kernel sees a wider pattern. The lecture also names batch normalisation and the RMSprop optimiser for this network. The naive module applies the large kernels to the full incoming depth and is costly. A $`1 \times 1`$ convolution in front of the $`3 \times 3`$ and the $`5 \times 5`$ reduces that depth first.
+
+**ResNet.** A plain stack gets worse as it gets deeper, including on the training set, because the gradient vanishes on the way down. A block learns the residual $`F(x)`$ and outputs $`y = F(x) + x`$. If the useful mapping is the identity, $`F`$ can stay near zero, which is easier than forcing a pile of nonlinear layers to copy $`x`$. The addition is also a path the gradient can take without passing through every weight. Batch normalisation is used. The lecture’s figure is about 11 million parameters. When the shapes already match, the skip is the identity. When the number of channels or the spatial size changes, a $`1 \times 1`$ projection makes $`x`$ addable to $`F(x)`$. The same idea appears later as the LSTM cell state: a skip through time, where ResNet’s skip is through depth.
+
+**Long answer.** One sentence of pipeline, then LeNet against AlexNet (activation, pooling, input size, parameter count, dropout and LRN), then VGG’s $`18`$ against $`25`$, then Inception’s parallel kernels, then $`y = F(x) + x`$ with identity versus projection.
 
 ## A6. Object recognition and computer vision
 
@@ -207,6 +243,14 @@ The lecture’s applications, which you should name rather than invent:
 - medical image analysis and anomaly detection.
 
 A CNN alone is the wrong tool for a long sentence or a speech waveform: a filter has no memory outside its window. Video is handled by letting the CNN read each frame and an RNN, LSTM, or attention model read the sequence of frame vectors. That link is used again in Unit B.
+
+What to write if the question is “CNN for object recognition”:
+
+1. The image is a grid, so a shared filter is the right first operation.
+2. Draw image, convolution, ReLU, pooling, a second convolution, pooling, fully connected layers, softmax.
+3. The softmax dimension is the number of object classes. LeNet has 10 digit classes. AlexNet has 1000 ImageNet classes. The loss is cross-entropy.
+4. Name two applications from the lecture: optical character recognition for documents, and medical image analysis. Classification for search or social media is a third.
+5. Say what the network cannot do: it does not read a sentence, and a single frame has no motion. Motion needs a recurrent layer or attention on top of the frame features.
 
 ## A7. Transfer learning
 
@@ -223,13 +267,13 @@ When the target set is **small**, freeze the early layers and train the new head
 
 When the target set is large and the pictures are unlike the source, more layers can be fine-tuned.
 
-This is the same idea as BERT later: expensive pretraining once, cheap adaptation per task. Use the phrase **transfer learning** in both answers.
+The same pattern appears when BERT is fine-tuned: an expensive unsupervised pretraining is done once, and each new task adds a small head. In this unit the source task is image classification. In the BERT unit the source task is masked language modelling. The name in both answers is transfer learning.
 
-**6 marks.** Steps 1–4, plus the freeze rule, plus one sentence on why early layers transfer.
+![Transfer learning](figures/transfer-learning.png)
 
-## A8. What Unit A looks like in the MCQ paper
+**Worked case.** A chest X-ray set has a few hundred labelled images and three findings. Start from a network trained on ImageNet. Delete the 1000-way softmax. Put on a 3-way softmax. Freeze the early convolutional layers. Train the new head, and optionally the last convolutional block, with a learning rate such as $`10^{-4}`$ or smaller. If instead every layer is trained with a learning rate of $`0.1`$, the edge filters are overwritten and the small set is memorised.
 
-The option is wrong if it says LeNet uses ReLU and max pooling, or AlexNet has 60,000 parameters, or VGG’s input is $`32 \times 32`$, or a $`1 \times 1`$ filter looks at a $`5 \times 5`$ neighbourhood, or dropout is applied only at test time, or the skip connection is there to increase the parameter count.
+**Long answer.** The four steps, the freeze rule, the X-ray case, and one sentence on why early layers transfer (edges and textures are not specific to the 1000 ImageNet classes).
 
 ---
 
@@ -296,7 +340,9 @@ With a one-hot input, step $`t`$ writes into **one column**, the column of the c
 
 **Vanishing gradient.** Each step multiplies the error by a weight times a tanh slope. Ten factors of $`0.5`$ leave about $`0.001`$. Early words stop teaching the weights. “Ravi, who grew up in Coimbatore and studied at PSG Tech …, says ___” should be completed by “he”. A plain RNN has usually forgotten “Ravi”. Exploding is the opposite illness: the factors are larger than 1 and the update blows up. LSTM’s cell state is aimed at the vanishing case.
 
-**10 marks.** Draw the unroll. Write $`h_t`$. Say the gradient of a shared weight is a sum over time. Say which of $`W_{xh}`$, $`W_{hh}`$, $`W_{hy}`$ needs the through-time term. Give the Ravi sentence as the symptom, and the product of slopes as the cause. Do not skip the sum-over-copies sentence. It is the definition of BPTT.
+**Long answer.** Draw the unroll. Write $`h_t`$. Say the gradient of a shared weight is a sum over time. Say which of $`W_{xh}`$, $`W_{hh}`$, $`W_{hy}`$ needs the through-time term. Give the Ravi sentence as the symptom, and the product of slopes as the cause. The sum over copies is the definition of BPTT.
+
+![Backpropagation through time](figures/bptt-flow.png)
 
 ![RNN, LSTM, GRU](figures/rnn-lstm-gru.png)
 
@@ -306,21 +352,35 @@ One chain reads left to right. A second chain reads right to left. Their hidden 
 
 Use it when the **whole sequence is already in hand**: named-entity recognition, or cutting a recorded ECG into segments. Do not use it for live next-tick prediction. The future ticks do not exist yet, so the backward chain has nothing to read.
 
-A stacked (deep) RNN puts another RNN on top of the first. The lower layer must return the **whole sequence** (`return_sequences=True` in the Keras snippet), because the upper layer needs a sequence, not one vector.
+A stacked (deep) RNN puts another RNN on top of the first. The lower layer must return the **whole sequence** (`return_sequences=True` in the Keras snippet), because the upper layer needs a sequence, not one vector. If the lower layer returns only its last state, the upper layer has a single vector and cannot be recurrent over the words.
+
+**Worked sentence.** “Paris is the capital of France.” A forward state at “capital” has seen “Paris is the”. A backward state at “capital” has seen “of France”. Joining them lets the label of “capital” use both the city and the country. A live keyboard that must guess the next letter cannot run the backward chain, because the future letters have not been typed.
 
 ## B5. Encoder–decoder
 
-Translation and speech-to-text have unequal lengths. The encoder reads the whole input. In the plain RNN version, the decoder is started from **one vector**, the encoder’s last hidden state. The decoder then writes one output token at a time.
+Translation and speech-to-text have unequal lengths. “I love AI” and “Ich liebe künstliche Intelligenz” are not the same number of tokens, so an aligned many-to-many model, which emits one label per input step, does not fit. The encoder reads the whole input and compresses it. In the plain RNN version the decoder is started from **one vector**, the encoder’s last hidden state, and then writes one output token at a time until an end token.
 
-That single vector is the bottleneck. A long sentence does not fit cleanly inside one $`h`$. Attention, and then the Transformer, keep **one vector per input token** and let the decoder look them up. When a question says “limitation of the basic encoder–decoder”, the answer is this bottleneck, not “RNNs cannot use words”.
+That single vector is the bottleneck. A long sentence does not fit cleanly inside one $`h`$, and the first input word has been through every later step before it reaches the decoder. Attention, and then the Transformer, keep **one vector per input token** and let the decoder look them up. The limitation of the basic encoder–decoder is this bottleneck.
+
+Training uses teacher forcing: the decoder is fed the true previous target word, shifted one step to the right, not its own earlier guess. At test time there is no true previous word, so the decoder consumes its own output. Greedy decoding keeps the single most probable next word. Beam search keeps several partial translations (the lecture illustrates a beam of 4) and continues the best ones.
+
+The five shapes, so they are not confused with the encoder–decoder:
+
+- one-to-one is an ordinary feedforward net;
+- one-to-many is captioning: one image, many words;
+- many-to-one is sentiment: many words, one label;
+- aligned many-to-many is part-of-speech tagging: one tag per word;
+- unequal many-to-many is the encoder–decoder: translation, speech to text.
 
 ## B6. Recursive nets
 
 A **recurrent** net walks a chain: $`h_t`$ comes from $`h_{t-1}`$.
 
-A **recursive** net walks a tree. The same composition function builds a parent from its children. For the phrase “not very good”, the net can first compose “very good” and then apply “not”. The tree is usually a syntactic parse. Phrase-level sentiment is the standard example.
+A **recursive** net walks a tree. The same composition function builds a parent from its children. For the phrase “not very good”, the net first composes “very good” and then applies “not”. The tree is usually a syntactic parse. Phrase-level sentiment is the standard example. The same weights are used at every parent, which is weight sharing on the tree, the way an RNN shares weights along time.
 
-Bidirectional and stacked RNNs are still chains. Do not pick them as the definition of a recursive net.
+Bidirectional and stacked RNNs are still chains. They are not the definition of a recursive net. A recursive net needs a tree. If the question gives only a sequence and no parse, the model to name is recurrent, bidirectional, or an encoder–decoder, not recursive.
+
+![Bidirectional RNN, encoder–decoder, and a recursive tree](figures/sequence-structures.png)
 
 ## B7. LSTM
 
@@ -491,7 +551,7 @@ expanding 512 to 2048 and back, with the same weights at every position. Attenti
 
 Original base model: 6 encoder layers and 6 decoder layers, $`d_{\text{model}} = 512`$, 8 heads, $`d_k = 64`$, feed-forward width 2048, about 65 million parameters.
 
-Families, which the MCQ paper loves:
+Three families. A theory answer should name which one the question is about, because they do not share a mask or a job:
 
 | Family | Who | What it can see | Jobs |
 |---|---|---|---|
@@ -517,6 +577,17 @@ loss = binary cross-entropy
 The embedding turns each word id into a learned vector. The recurrent layer reads the review. Its **final** state summarises the sentence. A sigmoid makes a probability of “positive”. Binary cross-entropy is the matching loss. Swapping `SimpleRNN` for `LSTM` or `GRU` is one line. Use LSTM or GRU when the review is long enough for a plain RNN to forget the opening clause.
 
 If the task were part-of-speech tagging, the head would emit a softmax over tags **at every step**, and the recurrent layer would return the full sequence. One sigmoid for the whole sentence would be the wrong shape.
+
+**What to write for the case study.**
+
+1. The shape is many-to-one: the review is a sequence, the label is one bit or one class.
+2. Draw embedding, then LSTM or GRU, then a dense sigmoid. Say the recurrent layer returns only the last state, because there is one decision for the whole review.
+3. The embedding is a learned table. A word id is a row of that table, not a one-hot vector that stays one-hot.
+4. The loss is binary cross-entropy when the label is positive or negative. A three-class review (negative, neutral, positive) would use a softmax and categorical cross-entropy instead.
+5. A plain RNN is enough for a short review. A long review that opens with a complaint and ends with a compliment needs the cell state of an LSTM, or the update gate of a GRU, so the opening clause is still available at the last step.
+6. Contrast in three lines with part-of-speech tagging (one tag per word, full sequence returned) and with translation (encoder–decoder, two different lengths). Sentiment is neither of those.
+
+![Sentiment head, and attention used on speech and on images](figures/attention-uses.png)
 
 ## B12. BERT
 
@@ -567,13 +638,13 @@ The Transformer does not know that its tokens came from words. Cut the signal in
 - **Speech.** Audio frames or windows become the tokens (the lecture’s example is the Whisper style of model). The decoder, or a later encoder layer, can put its weight on the frames that actually contain the word being written, instead of squeezing the whole utterance into one RNN state. Keyword spotting on a phone is also a GRU application from the GRU deck: fewer parameters, on-device.
 - **Vision.** ViT cuts an image into patches and treats each patch as a token. Self-attention then mixes patches. That is different from a CNN, which shares a small filter on the grid. Captioning stays **one-to-many**: a CNN or a patch encoder reads the image, and a decoder writes the words, attending to the relevant region at each word. Frame features from a CNN, followed by an LSTM, are the lecture’s recipe for video and activity recognition.
 
-**6 marks.** One paragraph on speech frames as tokens, one on image patches or captioning, and one sentence that the attention formula did not change.
+**Long answer.** One paragraph on speech frames as tokens, one on image patches or captioning, and one sentence that the attention formula did not change. Use the lower half of the figure in B11. The upper half of that figure is the sentiment head, which is many-to-one and does not itself use query, key, and value.
 
 ---
 
 # Unit C — Unsupervised models
 
-An unsupervised model is not handed a class label. It has to find structure in $`x`$. Self-supervised is the special case where the target is built from $`x`$ itself (reconstruct $`x`$, predict a masked word). Semi-supervised, at the end of this unit, is the case with a **few** real labels and a large unlabeled set. Do not mix the three words up. The MCQs are written to catch that mix-up.
+An unsupervised model is not handed a class label. It has to find structure in $`x`$. Self-supervised is the special case where the target is built from $`x`$ itself (reconstruct $`x`$, predict a masked word). Semi-supervised, at the end of this unit, is the case with a **few** real labels and a large unlabeled set. The three words are different. A theory answer that swaps them loses the comparison.
 
 ## C1. What an autoencoder is
 
@@ -615,6 +686,10 @@ A **linear** autoencoder with squared error spans the same subspace as PCA. Nonl
 It was invented because a deep net from random weights vanished or fell into a poor minimum. Each layer starts from a sensible representation. With ReLU, batch normalisation, and careful initialisation, end-to-end training usually works now, so greedy pretraining is used mainly when **labels are scarce**.
 
 **Denoising.** Corrupt $`x`$ into $`\tilde{x}`$ (Gaussian noise, random masking, or salt-and-pepper). The loss still compares the output with the **clean** $`x`$. Copying the input no longer scores zero, so the net has to learn the structure that removes the noise. Noise is a training-time device. At test time you feed the real noisy recording (an old photo, a noisy MRI, an ECG with muscle noise) and read the reconstruction. The masking idea is an ancestor of BERT’s mask and of masked autoencoders.
+
+A numerical sketch is enough in the booklet. Suppose a pixel is $`0.8`$. Training adds noise and the network sees $`0.8 + 0.3 = 1.1`$, clipped if the input must stay in $`[0, 1]`$. The target of the loss is still $`0.8`$, not $`1.1`$. If the loss were against the noisy input, the network would learn to copy the corruption.
+
+![Denoising, greedy pretraining, and speech recognition with a DBN](figures/ae-and-speech.png)
 
 **Convolutional.** A dense autoencoder flattens a $`28 \times 28`$ image and forgets that neighbouring pixels belong together. Convolutions and pooling shrink the map and add channels. A transposed convolution, or plain upsampling, grows it back. Train on defect-free circuit boards and a scratch shows up as a patch of high reconstruction error. U-Net-style segmentation grows from this idea.
 
@@ -681,7 +756,7 @@ Labels are not required for steps 1–3. The reason is the same as in the stacke
 
 ## C5. Deep belief network and deep Boltzmann machine
 
-These two are the classic 1-mark trap, and they are also a 6-mark “compare” question. Draw both.
+These two are a comparison question. Draw both. The difference is the direction of the arrows, not the number of layers.
 
 **Deep belief network (DBN).** A stack of RBMs trained greedily, then reinterpreted as a generative model:
 
@@ -710,7 +785,9 @@ The DBN pipeline this portion means:
 3. Add a softmax and fine-tune so that each frame is scored as a phonetic HMM state (a senone).
 4. The HMM is still there for time alignment. The DBN, used as a deep neural net after fine-tuning, **replaces the Gaussian mixture** as the acoustic model.
 
-Do not write “the DBN is the microphone” or “the DBN translates the sentence by cross-attention”. Those are different units.
+The network is the acoustic model. It is not the microphone, and it is not a Transformer translating the sentence by cross-attention. Those belong to other questions. The figure in C2 is the one to redraw: frames, unlabeled pretraining, a softmax over phonetic states, and an HMM that still aligns time.
+
+**Long answer.** Name the old system (HMM plus a Gaussian mixture), say what is weak about a mixture of Gaussians on one frame, then the four steps, then the sentence “the deep net replaces the mixture; the HMM stays”. Close with greedy learning: the lower layers are trained with no phonetic labels, which is why this pipeline can use a large unlabeled speech collection.
 
 ## C7. Generative adversarial networks
 
@@ -797,7 +874,7 @@ Draw $`z \to G \to`$ fake, and real $`x`$, both into $`D`$. Write $`V(D,G)`$ and
 
 # One-page oral revision
 
-Say these aloud the evening before the paper. If you can say the sentence, you can recognise the MCQ option and you can start the long answer.
+Say these aloud the evening before the paper. Each sentence is the opening line of a theory answer.
 
 - A CNN shares a filter across **space**. An RNN shares a matrix across **time**.
 - Output size is $`(n + 2P - f)/S + 1`$. One RGB filter makes one feature map.

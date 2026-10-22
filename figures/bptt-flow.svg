@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="280" viewBox="0 0 980 280">
+  <rect width="980" height="280" fill="#ffffff"/>
+  <text x="24" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Backpropagation through time</text>
+  <text x="24" y="58" font-family="Arial, sans-serif" font-size="13">Forward: memory moves to the right. Backward: error moves to the left. The three boxes are one cell.</text>
+  <rect x="80" y="90" width="100" height="48" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="112" y="119" font-family="Arial, sans-serif" font-size="14">t = 1</text>
+  <rect x="280" y="90" width="100" height="48" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="312" y="119" font-family="Arial, sans-serif" font-size="14">t = 2</text>
+  <rect x="480" y="90" width="100" height="48" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="512" y="119" font-family="Arial, sans-serif" font-size="14">t = 3</text>
+  <line x1="180" y1="106" x2="280" y2="106" stroke="#15803d" stroke-width="2"/>
+  <line x1="380" y1="106" x2="480" y2="106" stroke="#15803d" stroke-width="2"/>
+  <text x="200" y="98" font-family="Arial, sans-serif" font-size="12" fill="#15803d">h forward</text>
+  <line x1="280" y1="122" x2="180" y2="122" stroke="#b91c1c" stroke-width="2"/>
+  <line x1="480" y1="122" x2="380" y2="122" stroke="#b91c1c" stroke-width="2"/>
+  <text x="190" y="148" font-family="Arial, sans-serif" font-size="12" fill="#b91c1c">error through W_hh</text>
+  <rect x="640" y="90" width="80" height="48" rx="6" fill="#fecaca" stroke="#1e3a5f"/>
+  <text x="662" y="119" font-family="Arial, sans-serif" font-size="14">Loss</text>
+  <line x1="580" y1="114" x2="640" y2="114" stroke="#1e3a5f" stroke-width="2"/>
+  <text x="24" y="190" font-family="Arial, sans-serif" font-size="13">W_xh and W_hh sit inside the loop, so their gradient is a sum over time and must travel backward.</text>
+  <text x="24" y="214" font-family="Arial, sans-serif" font-size="13">W_hy sits after h_t. It is summed over time, but error does not travel through it into earlier steps.</text>
+  <text x="24" y="246" font-family="Arial, sans-serif" font-size="13">In the word hope, the letter e is never an input, so its column of dL/dW_xh stays zero.</text>
+</svg>

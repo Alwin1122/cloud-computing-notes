@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="460" viewBox="0 0 980 460">
+  <rect width="980" height="460" fill="#ffffff"/>
+  <text x="24" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1e3a5f">Attention: query, key, value, and two uses</text>
+  <rect x="24" y="56" width="200" height="44" rx="6" fill="#dbeafe" stroke="#1e3a5f"/>
+  <text x="40" y="83" font-family="Arial, sans-serif" font-size="13">Query: what am I seeking?</text>
+  <rect x="250" y="56" width="240" height="44" rx="6" fill="#ffedd5" stroke="#1e3a5f"/>
+  <text x="266" y="83" font-family="Arial, sans-serif" font-size="13">Key: what can I be matched on?</text>
+  <rect x="516" y="56" width="250" height="44" rx="6" fill="#bbf7d0" stroke="#15803d"/>
+  <text x="532" y="83" font-family="Arial, sans-serif" font-size="13">Value: what I pass on if chosen</text>
+  <text x="24" y="132" font-family="Arial, sans-serif" font-size="14">score = query dot key, divide by sqrt(d_k), softmax, then a weighted sum of values.</text>
+  <text x="24" y="170" font-family="Arial, sans-serif" font-size="14" font-weight="700">Sentiment is many-to-one. It does not need a picture of attention.</text>
+  <rect x="24" y="186" width="140" height="36" rx="6" fill="#dbeafe" stroke="#1e3a5f"/><text x="48" y="209" font-family="Arial, sans-serif" font-size="13">Embedding</text>
+  <rect x="184" y="186" width="160" height="36" rx="6" fill="#ffedd5" stroke="#1e3a5f"/><text x="210" y="209" font-family="Arial, sans-serif" font-size="13">LSTM or GRU</text>
+  <rect x="364" y="186" width="200" height="36" rx="6" fill="#bbf7d0" stroke="#15803d"/><text x="384" y="209" font-family="Arial, sans-serif" font-size="13">sigmoid, one label</text>
+  <text x="24" y="248" font-family="Arial, sans-serif" font-size="13">Loss is binary cross-entropy. The recurrent layer returns only its last state.</text>
+  <text x="24" y="286" font-family="Arial, sans-serif" font-size="14" font-weight="700">Speech: frames are the tokens. Vision: patches or CNN regions are the tokens.</text>
+  <rect x="24" y="304" width="420" height="70" rx="6" fill="#f8fafc" stroke="#1e3a5f"/>
+  <text x="40" y="332" font-family="Arial, sans-serif" font-size="13">waveform -&gt; frames -&gt; embed + position -&gt; attention</text>
+  <text x="40" y="356" font-family="Arial, sans-serif" font-size="13">The decoder looks at the frames of the spoken word.</text>
+  <rect x="470" y="304" width="470" height="70" rx="6" fill="#f8fafc" stroke="#1e3a5f"/>
+  <text x="486" y="332" font-family="Arial, sans-serif" font-size="13">image -&gt; patches, or CNN features of regions</text>
+  <text x="486" y="356" font-family="Arial, sans-serif" font-size="13">Captioning writes one word and attends to a region.</text>
+  <text x="24" y="410" font-family="Arial, sans-serif" font-size="13">BERT question answering does not generate the answer. It points at a start token and an end token in the passage.</text>
+  <text x="24" y="436" font-family="Arial, sans-serif" font-size="13">Example: question "When was the Transformer introduced?" The span inside the passage is the token 2017.</text>
+</svg>
