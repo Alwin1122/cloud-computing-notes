@@ -47,10 +47,10 @@ Digital signatures therefore include an authentication function **plus** non-rep
 
 Typical flow:
 
-1. Sender computes a **hash** of the message \(M\): \(m = H(M)\).
-2. Sender **signs** the hash with the **private key** → signature \(S\).
-3. Message \(M\) and signature \(S\) are sent to the receiver.
-4. Receiver recomputes \(H(M)\) and **verifies** \(S\) using the sender’s **public key**.
+1. Sender computes a **hash** of the message $`M`$: $`m = H(M)`$.
+2. Sender **signs** the hash with the **private key** → signature $`S`$.
+3. Message $`M`$ and signature $`S`$ are sent to the receiver.
+4. Receiver recomputes $`H(M)`$ and **verifies** $`S`$ using the sender’s **public key**.
 5. If verification succeeds, the message is authentic and untampered; the signer is accountable.
 
 Signing the **hash** (not the full message) is efficient and is what schemes like ElGamal, Schnorr, and DSA use in practice.
@@ -118,119 +118,147 @@ A digital signature **must**:
 
 ### 6.2 Key generation
 
-Global / public parameters: prime \(q\), primitive root \(a\) of \(q\).
+Global / public parameters: prime $`q`$, primitive root $`a`$ of $`q`$.
 
 Each user A:
 
-1. Choose secret private key \(x_A\) with \(1 < x_A < q - 1\).
-2. Compute public key \(y_A = a^{x_A} \bmod q\).
+1. Choose secret private key $`x_A`$ with $`1 < x_A < q - 1`$.
+2. Compute public key $`y_A = a^{x_A} \bmod q`$.
 
-Public values: \((q, a, y_A)\). Private: \(x_A\).
+Public values: $`(q, a, y_A)`$. Private: $`x_A`$.
 
 ### 6.3 Signing
 
-Alice signs message \(M\):
+Alice signs message $`M`$:
 
-1. Compute hash \(m = H(M)\) with \(0 \le m \le (q-1)\).
-2. Choose random \(K\) with \(1 \le K \le (q-1)\) and \(\gcd(K, q-1) = 1\).
-3. Compute \(S_1 = a^K \bmod q\).
-4. Compute \(K^{-1} \bmod (q-1)\) (modular inverse of \(K\)).
-5. Compute \(S_2 = K^{-1}(m - x_A S_1) \bmod (q-1)\).
-6. Signature is the pair \((S_1, S_2)\).
+1. Compute hash $`m = H(M)`$ with $`0 \le m \le (q-1)`$.
+2. Choose random $`K`$ with $`1 \le K \le (q-1)`$ and $`\gcd(K, q-1) = 1`$.
+3. Compute $`S_1 = a^K \bmod q`$.
+4. Compute $`K^{-1} \bmod (q-1)`$ (modular inverse of $`K`$).
+5. Compute $`S_2 = K^{-1}(m - x_A S_1) \bmod (q-1)`$.
+6. Signature is the pair $`(S_1, S_2)`$.
 
 ### 6.4 Verification
 
 Any verifier B computes:
 
-\[
+
+```math
 V_1 = a^m \bmod q
-\]
+```
 
-\[
+
+
+```math
 V_2 = (y_A^{S_1} \cdot S_1^{S_2}) \bmod q
-\]
+```
 
-Signature is **valid** if \(V_1 = V_2\).
+
+Signature is **valid** if $`V_1 = V_2`$.
 
 ### 6.5 Worked example (from lecture slides)
 
-Field \(\mathrm{GF}(19)\): \(q = 19\), \(a = 10\).
+Field $`\mathrm{GF}(19)`$: $`q = 19`$, $`a = 10`$.
 
-**Key:** \(x_A = 16\), so
+**Key:** $`x_A = 16`$, so
 
-\[
+
+```math
 y_A = 10^{16} \bmod 19 = 4
-\]
+```
 
-**Sign** message with hash \(m = 14\), choose \(K = 5\) (\(\gcd(5,18)=1\)):
 
-\[
+**Sign** message with hash $`m = 14`$, choose $`K = 5`$ ($`\gcd(5,18)=1`$):
+
+
+```math
 S_1 = 10^5 \bmod 19 = 3
-\]
+```
 
-\[
+
+
+```math
 K^{-1} \bmod 18 = 5^{-1} \bmod 18 = 11
-\]
+```
 
-\[
+
+
+```math
 S_2 = 11(14 - 16 \cdot 3) \bmod 18 = 4
-\]
+```
 
-Signature = \((3, 4)\).
+
+Signature = $`(3, 4)`$.
 
 **Verify:**
 
-\[
+
+```math
 V_1 = 10^{14} \bmod 19 = 16
-\]
+```
 
-\[
+
+
+```math
 V_2 = (4^3 \cdot 3^4) \bmod 19 = 16
-\]
+```
 
-Since \(V_1 = V_2\), the signature is **valid**.
+
+Since $`V_1 = V_2`$, the signature is **valid**.
 
 ### 6.6 Exam-style problem (CAT-style)
 
-**Given:** public parameters / key \(\{q, a, y_A\} = \{23, 5, 17\}\), message \(m = 19\), \(K = 13\), private key \(x_A = 14\). Check whether the signature verifies.
+**Given:** public parameters / key $`\{q, a, y_A\} = \{23, 5, 17\}`$, message $`m = 19`$, $`K = 13`$, private key $`x_A = 14`$. Check whether the signature verifies.
 
 **Step 1 — Consistency of public key**
 
-\[
-y_A \stackrel{?}{=} 5^{14} \bmod 23 = 13
-\]
 
-The correctly computed public key from \(x_A = 14\) is **\(y_A = 13\)**. (If the paper lists \(17\), treat that as inconsistent with \(x_A=14\); verification must use the matching \(y_A\).)
+```math
+y_A \stackrel{?}{=} 5^{14} \bmod 23 = 13
+```
+
+
+The correctly computed public key from $`x_A = 14`$ is **$`y_A = 13`$**. (If the paper lists $`17`$, treat that as inconsistent with $`x_A=14`$; verification must use the matching $`y_A`$.)
 
 **Step 2 — Sign**
 
-\(\gcd(13, 22) = 1\) ✓
+$`\gcd(13, 22) = 1`$ ✓
 
-\[
+
+```math
 S_1 = 5^{13} \bmod 23 = 21
-\]
+```
 
-\[
+
+
+```math
 K^{-1} = 13^{-1} \bmod 22 = 17
-\]
+```
 
-\[
+
+
+```math
 S_2 = 17(19 - 14 \cdot 21) \bmod 22 = 11
-\]
+```
 
-Signature = \((S_1, S_2) = (21, 11)\).
 
-**Step 3 — Verify** (with \(y_A = 13\))
+Signature = $`(S_1, S_2) = (21, 11)`$.
 
-\[
+**Step 3 — Verify** (with $`y_A = 13`$)
+
+
+```math
 V_1 = 5^{19} \bmod 23 = 7
-\]
+```
 
-\[
+
+
+```math
 V_2 = (13^{21} \cdot 21^{11}) \bmod 23 = 7
-\]
+```
 
-\(V_1 = V_2\) → signature is **verified**.
+
+$`V_1 = V_2`$ → signature is **verified**.
 
 ---
 
@@ -240,28 +268,28 @@ V_2 = (13^{21} \cdot 21^{11}) \bmod 23 = 7
 
 - Also uses exponentiation in a finite field; security from **discrete logs**.
 - Designed to **minimize message-dependent computation** (main work can be done in idle time).
-- Uses prime modulus \(p\) where \(p-1\) has a prime factor \(q\) of suitable size.
-- Typical sizes: \(p\) ≈ **1024-bit**, \(q\) ≈ **160-bit**.
+- Uses prime modulus $`p`$ where $`p-1`$ has a prime factor $`q`$ of suitable size.
+- Typical sizes: $`p`$ ≈ **1024-bit**, $`q`$ ≈ **160-bit**.
 
 ### 7.2 Key setup
 
-1. Choose suitable primes \(p, q\).
-2. Choose \(a\) such that \(a^q \equiv 1 \pmod{p}\).
-3. Global parameters for all users: \((a, p, q)\).
-4. Each user A chooses secret \(s_A\) with \(0 < s_A < q\).
-5. Public key: \(v_A = a^{-s_A} \bmod p\) (as in the lecture form).
+1. Choose suitable primes $`p, q`$.
+2. Choose $`a`$ such that $`a^q \equiv 1 \pmod{p}`$.
+3. Global parameters for all users: $`(a, p, q)`$.
+4. Each user A chooses secret $`s_A`$ with $`0 < s_A < q`$.
+5. Public key: $`v_A = a^{-s_A} \bmod p`$ (as in the lecture form).
 
 ### 7.3 Signing
 
-1. Choose random \(r\) with \(0 < r < q\); compute \(x = a^r \bmod p\).
-2. Compute \(e = H(M \| x)\) (hash of message concatenated with \(x\)).
-3. Compute \(y = (r + s_A e) \bmod q\).
-4. Signature is the pair \((e, y)\).
+1. Choose random $`r`$ with $`0 < r < q`$; compute $`x = a^r \bmod p`$.
+2. Compute $`e = H(M \| x)`$ (hash of message concatenated with $`x`$).
+3. Compute $`y = (r + s_A e) \bmod q`$.
+4. Signature is the pair $`(e, y)`$.
 
 ### 7.4 Verification
 
-1. Compute \(x' = a^y \, v_A^{e} \bmod p\).
-2. Accept if \(e = H(M \| x')\).
+1. Compute $`x' = a^y \, v_A^{e} \bmod p`$.
+2. Accept if $`e = H(M \| x')`$.
 
 ---
 
@@ -287,104 +315,134 @@ V_2 = (13^{21} \cdot 21^{11}) \bmod 23 = 7
 
 ### 8.3 DSA key generation
 
-**Global public parameters** \((p, q, g)\):
+**Global public parameters** $`(p, q, g)`$:
 
-1. Choose 160-bit prime \(q\).
-2. Choose large prime \(p\) with \(2^{L-1} < p < 2^L\), where \(L = 512\) to \(1024\) and multiple of 64, such that \(q\) divides \((p-1)\).
-3. Choose \(g = h^{(p-1)/q} \bmod p\), where \(1 < h < p-1\) and \(g > 1\).
+1. Choose 160-bit prime $`q`$.
+2. Choose large prime $`p`$ with $`2^{L-1} < p < 2^L`$, where $`L = 512`$ to $`1024`$ and multiple of 64, such that $`q`$ divides $`(p-1)`$.
+3. Choose $`g = h^{(p-1)/q} \bmod p`$, where $`1 < h < p-1`$ and $`g > 1`$.
 
 **Per-user keys:**
 
-- Private: random \(x < q\).
-- Public: \(y = g^x \bmod p\).
+- Private: random $`x < q`$.
+- Public: $`y = g^x \bmod p`$.
 
 ### 8.4 DSA signature creation
 
-Sender signs \(M\):
+Sender signs $`M`$:
 
-1. Choose random per-message key \(k\) with \(k < q\).
-   - \(k\) must be random, destroyed after use, and **never reused**.
+1. Choose random per-message key $`k`$ with $`k < q`$.
+   - $`k`$ must be random, destroyed after use, and **never reused**.
 2. Compute
 
-\[
+
+```math
 r = (g^k \bmod p) \bmod q
-\]
+```
 
-\[
+
+
+```math
 s = \bigl[k^{-1}\bigl(H(M) + x r\bigr)\bigr] \bmod q
-\]
+```
 
-3. Send message \(M\) with signature \((r, s)\).
+
+3. Send message $`M`$ with signature $`(r, s)`$.
 
 ### 8.5 DSA signature verification
 
-Receiver has \(M\) and \((r, s)\):
+Receiver has $`M`$ and $`(r, s)`$:
 
-\[
+
+```math
 w = s^{-1} \bmod q
-\]
+```
 
-\[
+
+
+```math
 u_1 = \bigl[H(M)\, w\bigr] \bmod q
-\]
+```
 
-\[
+
+
+```math
 u_2 = (r w) \bmod q
-\]
+```
 
-\[
+
+
+```math
 v = \bigl[\bigl(g^{u_1} y^{u_2} \bmod p\bigr)\bigr] \bmod q
-\]
+```
 
-If \(v = r\), the signature is **verified**.
+
+If $`v = r`$, the signature is **verified**.
 
 ### 8.6 Worked DSS example (CAT-style)
 
-**Given:** \(p = 47\), \(q = 23\), \(h = 31\), \(x = 19\), \(k = 17\), \(H(M) = 21\).
+**Given:** $`p = 47`$, $`q = 23`$, $`h = 31`$, $`x = 19`$, $`k = 17`$, $`H(M) = 21`$.
 
 **Manny (signer) — generate keys and signature**
 
-\[
+
+```math
 g = h^{(p-1)/q} \bmod p = 31^{2} \bmod 47 = 21
-\]
+```
 
-\[
+
+
+```math
 y = g^x \bmod p = 21^{19} \bmod 47 = 28
-\]
+```
 
-\[
+
+
+```math
 r = (g^k \bmod p) \bmod q = (21^{17} \bmod 47) \bmod 23 = 12
-\]
+```
 
-\[
+
+
+```math
 k^{-1} \bmod 23 = 17^{-1} \bmod 23 = 19
-\]
+```
 
-\[
+
+
+```math
 s = \bigl[17^{-1}(21 + 19 \cdot 12)\bigr] \bmod 23 = 16
-\]
+```
 
-**Signature generated:** \((r, s) = (12, 16)\).
+
+**Signature generated:** $`(r, s) = (12, 16)`$.
 
 **Oscar (verifier) — verify**
 
-\[
+
+```math
 w = s^{-1} \bmod 23 = 16^{-1} \bmod 23 = 13
-\]
+```
 
-\[
+
+
+```math
 u_1 = (21 \cdot 13) \bmod 23 = 20
-\]
+```
 
-\[
+
+
+```math
 u_2 = (12 \cdot 13) \bmod 23 = 18
-\]
+```
 
-\[
+
+
+```math
 v = \bigl[(21^{20} \cdot 28^{18}) \bmod 47\bigr] \bmod 23 = 12
-\]
+```
 
-Since \(v = r = 12\), the signature is **verified**.
+
+Since $`v = r = 12`$, the signature is **verified**.
 
 ---
 
@@ -497,9 +555,9 @@ Organizations should build **crypto-agility** — the ability to switch algorith
 | Why signatures? | Trust, non-repudiation, third-party dispute resolution |
 | Sign then encrypt | Order matters for direct signatures |
 | ElGamal / Schnorr / DSA security | Discrete logarithm problem |
-| ElGamal verify | \(V_1 = a^m \bmod q\), \(V_2 = y^{S_1} S_1^{S_2} \bmod q\) |
-| DSA verify | Compute \(w, u_1, u_2, v\); accept if \(v = r\) |
-| Never reuse \(k\) in DSA | Reusing \(k\) can leak the private key |
+| ElGamal verify | $`V_1 = a^m \bmod q`$, $`V_2 = y^{S_1} S_1^{S_2} \bmod q`$ |
+| DSA verify | Compute $`w, u_1, u_2, v`$; accept if $`v = r`$ |
+| Never reuse $`k`$ in DSA | Reusing $`k`$ can leak the private key |
 | DSS vs DSA | DSS = standard; DSA = algorithm |
 | PQC threat | Shor → RSA/ECC break |
 | PQC examples | Kyber, Dilithium, Falcon, SPHINCS+, Classic McEliece |
