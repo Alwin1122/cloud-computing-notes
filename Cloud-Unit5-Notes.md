@@ -1,12 +1,21 @@
 # Cloud Computing — Unit 5 Essential Notes
 
-Edge Cloud Services. Three chapters from the lecture PDF: **Amazon Web Services**, **Microsoft Azure**, and **Google App Engine**.
+Four parts from the lecture PDF: **OpenStack, iFogSim, ioFog, and applications**, then **Amazon Web Services**, **Microsoft Azure**, and **Google App Engine**.
 
-Every topic is explained as: what it is, why it is used, and one example. The one-mark questions are in `Cloud-Unit5-1Mark.md`. Read this file first, then sit the questions.
+Every topic is explained as: what it is, why it is used, and one example. The one-mark questions for AWS, Azure, and App Engine are in `Cloud-Unit5-1Mark.md`. Read this file first, then sit the questions.
 
 ---
 
 ## Table of Contents
+
+**Part A — OpenStack, simulation, the edge platform, and applications**
+
+- [A1. OpenStack is a cloud you run yourself](#a1-openstack-is-a-cloud-you-run-yourself)
+- [A2. The services, and how a virtual machine is born](#a2-the-services-and-how-a-virtual-machine-is-born)
+- [A3. OpenStack beside AWS, Azure, and Google Cloud](#a3-openstack-beside-aws-azure-and-google-cloud)
+- [A4. iFogSim — simulate the fog before you build it](#a4-ifogsim--simulate-the-fog-before-you-build-it)
+- [A5. Eclipse ioFog — run the edge for real](#a5-eclipse-iofog--run-the-edge-for-real)
+- [A6. Analytics, and five places it is used](#a6-analytics-and-five-places-it-is-used)
 
 **Chapter 1 — Amazon Web Services**
 
@@ -37,6 +46,126 @@ Every topic is explained as: what it is, why it is used, and one example. The on
 19. [The other Google Cloud services beside it](#19-the-other-google-cloud-services-beside-it)
 20. [The same job on three clouds](#20-the-same-job-on-three-clouds)
 21. [The university case](#21-the-university-case)
+
+---
+
+# Part A — OpenStack, simulation, the edge platform, and applications
+
+## A1. OpenStack is a cloud you run yourself
+
+AWS, Azure, and Google Cloud are commercial providers. You consume services that they operate. **OpenStack** is open-source cloud software. An organization, or a service provider, installs it and manages the cloud on infrastructure it controls.
+
+OpenStack is primarily **Infrastructure as a Service**. It manages compute, storage, and networking. Through APIs or a dashboard, a user can provision virtual machines, attach storage, configure networks, and control those resources.
+
+**Example.** A college laboratory wants virtual machines for student projects, on servers the college already owns. It installs OpenStack. Students request machines from that private cloud. The college administers the platform. It does not rent those machines from a public-cloud account.
+
+## A2. The services, and how a virtual machine is born
+
+The platform diagram draws one cloud in the centre and the services around it. Learn the job of each name. The exam asks for the job, then for the matching commercial service in section A3.
+
+| Service | Function | Example |
+|---|---|---|
+| Nova | Compute. Creates and manages virtual machines | Launch a Linux VM for a project |
+| Neutron | Networking. Creates virtual networks and connects VMs | Put the VM on the lab network |
+| Cinder | Block storage. Attaches a persistent volume to a VM | A disk that survives if the VM is rebuilt |
+| Swift | Object storage. Stores files and unstructured data | Project reports, images, backups |
+| Glance | Image service. Stores the VM images used to create instances | The Ubuntu image every student starts from |
+| Keystone | Identity. Authenticates users and controls access | The student may launch a VM and may not delete the lab network |
+| Horizon | Dashboard. The web interface for managing resources | Click through the same actions the API can do |
+| Heat | Orchestration. Deploys a group of resources from a template | One template creates the VM, the network, and the volume together |
+| Ceilometer | Telemetry, drawn on the platform diagram. Measures resource use | CPU, disk, and network meters for monitoring and accounting |
+
+The written service table in class lists the first eight. The architecture slide also draws **Ceilometer**. It is the metering service. It is not a second compute service and it is not the dashboard.
+
+Creating one virtual machine is a fixed order. This is the “mini private cloud” walk-through.
+
+1. **Login.** The student opens Horizon, or the OpenStack command-line client.
+2. **Authentication.** Keystone checks identity and permissions.
+3. **Image.** Glance supplies an operating-system image, such as a supported Linux image.
+4. **Create.** Nova schedules the virtual machine onto a suitable compute host and creates it.
+5. **Network.** Neutron attaches the VM to the right virtual network.
+6. **Storage.** Cinder attaches a persistent volume when the VM needs a disk that outlives the instance.
+7. **Use.** The student logs in and runs the application.
+
+**Example.** A student needs a machine for a web project. Keystone accepts the login. Glance provides Ubuntu. Nova places the instance on a free host. Neutron gives it an address on the project network. Cinder attaches a 20 GB volume for the database files. Horizon is only the screen the student clicked. Heat would be used later, if the same stack had to be created again from a template for the whole class.
+
+## A3. OpenStack beside AWS, Azure, and Google Cloud
+
+Same job, different operator. On OpenStack the organization runs the software. On AWS, Azure, and Google Cloud the provider runs the infrastructure and you pay for use.
+
+| | OpenStack | AWS | Azure | Google Cloud |
+|---|---|---|---|---|
+| Kind of platform | Open-source cloud software | Commercial cloud | Commercial cloud | Commercial cloud |
+| Where it runs | On infrastructure the organization or operator manages | Provider-hosted | Provider-hosted | Provider-hosted |
+| Who owns the infrastructure | The organization or the operator | AWS | Microsoft | Google |
+| Usual cloud model | Private cloud, or a cloud a service provider offers | Public, hybrid, and other models | Public, hybrid, and other models | Public, hybrid, and other models |
+| Compute | Nova | Amazon EC2 | Azure Virtual Machines | Compute Engine |
+| Networking | Neutron | Amazon VPC | Azure Virtual Network | Google Cloud VPC |
+| Block storage | Cinder | Amazon EBS | Azure Managed Disks | Persistent Disk |
+| Object storage | Swift | Amazon S3 | Azure Blob Storage | Cloud Storage |
+| VM images | Glance | Amazon Machine Images | Azure VM images | Compute Engine images |
+| Identity | Keystone | AWS IAM | Microsoft Entra ID / Azure RBAC | Google Cloud IAM |
+| Dashboard | Horizon | AWS Management Console | Azure Portal | Google Cloud Console |
+| Orchestration | Heat | AWS CloudFormation | Azure Resource Manager | Cloud Deployment Manager (legacy); other infrastructure-as-code tools are used as well |
+| Main advantage | Control and customization of the platform | Broad managed catalogue | Microsoft ecosystem and hybrid cloud | Data analytics and AI/ML |
+| Main cost of the choice | You must deploy, maintain, and administer it | Usage charges and dependence on the provider | Usage charges and dependence on the provider | Usage charges and dependence on the provider |
+| Typical use | Build and run your own private cloud | Host applications on public cloud | Enterprise applications and hybrid cloud | Analytics, AI/ML, and application hosting |
+
+**Example.** “Store the project files” is Swift, S3, Blob Storage, or Cloud Storage. “Give the VM a disk” is Cinder, EBS, Managed Disks, or Persistent Disk. “Check who may launch the VM” is Keystone, IAM, Entra ID, or Google Cloud IAM. Three sentences, three rows. Swift is the file store. Cinder is the disk attached to the machine.
+
+## A4. iFogSim — simulate the fog before you build it
+
+**iFogSim** is a Java toolkit. It models and evaluates resource-management strategies for IoT, fog computing, and edge computing. It does not deploy software onto a factory PC. It runs a model so you can compare designs.
+
+| Piece | Meaning |
+|---|---|
+| Sensors / IoT devices | Generate the simulated data |
+| Fog devices | Edge gateways, local servers, or intermediate nodes |
+| Cloud data centre | The central computing resources |
+| Application modules | The tasks, such as filtering or anomaly detection |
+| Network links | The connections, including communication delay |
+| Placement policies | Where each module is allowed to run |
+| Performance metrics | Latency, network usage, and energy, according to how the simulation is configured |
+
+**Example.** A designer has two policies for a temperature filter: run it on the fog gateway, or send every sample to the cloud data centre. iFogSim places the module, applies the link delays, and reports latency, network use, and energy. The cheaper policy on paper can be the worse one once the link delay is included. The toolkit answers that before any hardware is bought.
+
+## A5. Eclipse ioFog — run the edge for real
+
+**Eclipse ioFog** is an open-source edge platform. It deploys, connects, and manages applications across distributed edge locations. Agents sit on the edge nodes. A control plane manages them. Workloads talk over secure connectivity.
+
+iFogSim evaluates a model. ioFog runs the workloads.
+
+| Piece | Function | Example |
+|---|---|---|
+| Edge node | The computer near the data source | An industrial PC in the factory |
+| ioFog Agent | Runs and manages workloads on that node | Executes a local temperature analyser |
+| Controller / control plane | Coordinates agents and applications across sites | One administration point for several factories |
+| Edge microservice | A small application with one job | A temperature filter, or a fault detector |
+| Connector / messaging | Carries messages between workloads | A detected fault is passed to another service |
+| Deployment tools | Define and deploy the workloads | A set of microservices described in configuration files |
+
+**Example.** Three factories each have an industrial PC. An ioFog Agent on each PC runs a fault-detector microservice. The controller is how the operator deploys that microservice to all three sites and keeps it updated. When the detector fires, the connector passes the event to a second microservice. That path is a running system. iFogSim would have been the earlier experiment that compared this placement with sending every reading to the cloud.
+
+## A6. Analytics, and five places it is used
+
+Data analytics collects, processes, and analyses data so that patterns, anomalies, likely outcomes, and decisions become visible. In an edge-cloud system the work is split. The split follows latency, data volume, connectivity, privacy, and how much computation the step needs.
+
+| Type | Question it answers | Example |
+|---|---|---|
+| Descriptive | What happened? | Average machine temperature today |
+| Diagnostic | Why did it happen? | Why this machine overheated |
+| Predictive | What may happen? | A bearing is likely to fail |
+| Prescriptive | What should be done? | Slow the machine and schedule maintenance |
+
+Five applications use that split.
+
+1. **Smart manufacturing — predictive maintenance.** Sensors read temperature, vibration, and current. Edge analytics catches an abnormal reading and alerts the operator. Cloud analytics reads the history and predicts the failure.
+2. **Smart traffic.** Cameras and road sensors estimate density. Edge processing sees congestion quickly and can inform the local signal controller. Cloud analytics studies city-wide trends.
+3. **Smart healthcare.** Patient monitors watch vital signs and raise an alert when a reading crosses a set threshold. Cloud systems support longitudinal analysis and clinical dashboards, with the privacy and safety controls that clinical data requires.
+4. **Precision agriculture.** Soil-moisture and weather sensors decide irrigation. A local controller can open the valves. Cloud analytics compares fields and seasons.
+5. **Smart energy.** Meter and equipment data show unusual consumption, estimate demand, and point at possible faults. Local processing raises the quick alert. Cloud analytics compares consumption over long periods.
+
+**Example.** A motor’s vibration crosses the limit. Descriptive analytics says the vibration is high. Diagnostic analytics ties it to the bearing. Predictive analytics estimates failure within the week. Prescriptive analytics says slow the line and book maintenance. The alert is an edge job, because waiting for the cloud adds delay and the link may be down. The week-long prediction is a cloud job, because it needs history from many machines.
 
 ---
 
@@ -468,6 +597,11 @@ Walk the questions in the notes.
 
 | Sentence you hear | What it is |
 |---|---|
+| Open-source IaaS that we install and administer | OpenStack. Nova creates the VM, Keystone checks the user, Horizon is the screen |
+| A disk on the VM, versus a file store | Cinder is the disk. Swift is the object store. The commercial twins are EBS and S3 |
+| Try the fog design before buying the PCs | iFogSim. It reports latency, network use, and energy for a placement policy |
+| Deploy the microservices onto the factory PCs | Eclipse ioFog. The agent runs the workload. The controller manages the sites |
+| What happened, why, what next, what to do | Descriptive, diagnostic, predictive, prescriptive |
 | A Linux machine I can log into, from a template | EC2, Azure Virtual Machines, or Compute Engine. The template on AWS is an AMI |
 | Code runs for an event and then exits. Idle costs nothing | Lambda or Azure Functions. On Google, Cloud Functions, not App Engine |
 | The website scales, and I will not create the servers | App Engine. Versions and traffic splitting are how a new release is tried |
